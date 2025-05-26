@@ -1,13 +1,15 @@
+using Eternet.Api.Common;
+
 namespace Eternet.Accounting.Api.Configuration;
 
-public class LegacyDbConfig
+public class LegacyDbConfig : ILegacyDbConfig
 {
-    public bool UseProduction { get; set; } // default is false, so no need to initialize
+    public bool UseProduction { get; set; }
     public LegacyConnectionStringBuilder Testing { get; set; } = new();
     public LegacyConnectionStringBuilder Production { get; set; } = new();
 }
 
-public class LegacyConnectionStringBuilder
+public class LegacyConnectionStringBuilder : ILegacyConnectionStringBuilder
 {
     public string DataSource { get; set; } = string.Empty;
     public string Database { get; set; } = string.Empty;

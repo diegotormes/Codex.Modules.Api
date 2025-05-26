@@ -39,6 +39,7 @@
   <ItemGroup>
 
     <ProjectReference Include="..\..\src\Eternet.Accounting.Api\Eternet.Accounting.Api.csproj" />
+    <ProjectReference Include="..\..\..\src\Eternet.Api.Common\Eternet.Api.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
