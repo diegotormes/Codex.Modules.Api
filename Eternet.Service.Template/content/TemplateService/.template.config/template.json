@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Eternet",
+  "classifications": ["Web", "Service"],
+  "name": "Eternet Microservice",
+  "identity": "Eternet.Service.Template",
+  "shortName": "et-service",
+  "sourceName": "TemplateService",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  }
+}
