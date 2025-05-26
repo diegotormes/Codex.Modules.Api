@@ -59,6 +59,6 @@ public class CreateEntryAccountingJournalTests()
 
         // Act
         var result = await mediator.Send(command, TestContext.Current.CancellationToken);
-        result.IsDomainResult.Should().BeTrue(result.GetErrorMessage());
+        result.ShouldBeSuccess();
     }
 }

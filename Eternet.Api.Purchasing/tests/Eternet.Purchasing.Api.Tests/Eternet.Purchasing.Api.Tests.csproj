@@ -18,13 +18,17 @@
 	  <None Remove="Features\**" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="AutoFixture.AutoNSubstitute" />
+  <ItemGroup>
+    <PackageReference Include="AutoFixture.AutoNSubstitute" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="Testcontainers" />
-		<PackageReference Include="System.ComponentModel.TypeConverter" />
-	</ItemGroup>
+    <PackageReference Include="System.ComponentModel.TypeConverter" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\tests\Eternet.Testing\Eternet.Testing.csproj" />
+  </ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\Eternet.Purchasing.Api\Eternet.Purchasing.Api.csproj" />
