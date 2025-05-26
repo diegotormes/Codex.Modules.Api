@@ -61,7 +61,7 @@ public static class ProgramExtensions
         services.AddSingleton<ILegacyContextFabric, LegacyContextFabric>();
         services.AddHttpContextAccessor();
         services.AddScoped<IEnvironmentService, EnvironmentService>();
-        services.AddConnectionStringBuilder();
+        services.AddConnectionStringBuilder<LegacyDbConfig>(ignoreUseProduction: true);
         services.AddDbContext<ViewsContext>(o => o.UseSqlite($"Data Source={ViewsDatabase}"));
         services.AddHostedService<ViewsContextInitializer>();
         services.AddScoped(
@@ -93,12 +93,9 @@ public static class ProgramExtensions
 
     public static void UseAppMiddlewares(this WebApplication app)
     {
-        app.UseSharedSwaggerUI(
-            serviceFabricPath: "Eternet.Api.Modules/Eternet.Accounting.Api", 
-            useServiceFabric: ServiceFabricUtils.IsHosted);
-        app.MapControllers();
-        app.MapDefaultEndpoints();
-        //app.MapEternetPrometheusScrapingEndpoint();
+        app.UseAppMiddlewares(
+            serviceFabricPath: "Eternet.Api.Modules/Eternet.Accounting.Api",
+            mapDefaultEndpoints: true);
     }
 
     private static void AddConfigurations(this IServiceCollection services, IConfiguration configuration)
@@ -106,35 +103,5 @@ public static class ProgramExtensions
         services.Configure<LegacyDbConfig>(configuration.GetSection(nameof(LegacyDbConfig)));
     }
 
-    private static IServiceCollection AddConnectionStringBuilder(this IServiceCollection services)
-    {
-        return services.AddTransient(s =>
-        {
-            var service = s.GetRequiredService<IOptions<LegacyDbConfig>>();
-            var connBuilder = service.Value;
-            var envService = s.GetRequiredService<IEnvironmentService>();
-            var env = envService.GetEnvironment();
 
-            if (env == ApiEnvironment.Testing)
-            {
-                return connBuilder.Testing.CreateConnectionBuilder();
-            }
-            return connBuilder.Production.CreateConnectionBuilder();
-        });
-    }
-
-    public static FbConnectionStringBuilder CreateConnectionBuilder(this LegacyConnectionStringBuilder connBuilder)
-    {
-        return new FbConnectionStringBuilder
-        {
-            DataSource = connBuilder.DataSource,
-            Database = connBuilder.Database,
-            UserID = connBuilder.UserId,
-            Password = connBuilder.Password,
-            Charset = connBuilder.Charset,
-            Pooling = connBuilder.Pooling,
-            ConnectionLifeTime = connBuilder.ConnectionLifeTime,
-            Port = connBuilder.Port
-        };
-    }
 }

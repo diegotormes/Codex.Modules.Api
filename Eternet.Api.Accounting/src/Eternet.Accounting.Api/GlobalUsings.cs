@@ -37,3 +37,4 @@ global using Eternet.Accounting.Contracts;
 global using Microsoft.AspNetCore.OData.Query.Expressions;
 global using Eternet.Accounting.Contracts.JournalEntries.Responses;
 global using Eternet.Accounting.Api.Features.VatClosures.Preview.MaterializedViews;
+global using Eternet.Api.Common.Extensions;
