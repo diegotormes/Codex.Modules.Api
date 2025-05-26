@@ -1,0 +1,18 @@
+﻿@namespace Eternet.Web.UI
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<FluentCard AreaRestricted="false" Style="padding: 15px; margin-bottom: 10px;">
+    <FluentLabel Typo="Typography.Subject">@Label</FluentLabel>
+    <FluentRadioGroup TOption="FilterNumericOperator"
+                      @bind-Value="CurrentOperator"
+                      Orientation="Orientation.Horizontal"
+                      Style="margin-bottom: 8px;">
+        <FluentRadio Value="FilterNumericOperator.GreaterOrEqual">≥</FluentRadio>
+        <FluentRadio Value="FilterNumericOperator.LessOrEqual">≤</FluentRadio>
+        <FluentRadio Value="FilterNumericOperator.Equals">=</FluentRadio>
+    </FluentRadioGroup>
+    <FluentNumberField @bind-Value="CurrentNumberValue"
+                       Step="any"
+                       Placeholder="Valor..."
+                       Style="width: 100%;" />
+</FluentCard>

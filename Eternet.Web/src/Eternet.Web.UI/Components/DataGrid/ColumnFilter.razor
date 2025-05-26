@@ -1,0 +1,179 @@
+﻿@using System.Reflection
+@using Eternet.Web.UI.Abstractions.DataGrid
+@using Eternet.Web.UI.Components.DataGrid
+@using Eternet.Web.UI.Components.DataGrid.Models
+@using Invoices.Incoming.WebApi.Components.DataGrid
+@using Microsoft.AspNetCore.Components
+
+@typeparam TGridItem
+
+@if (Filterable)
+{
+    var lambdaExpression = Column.LambdaExpression;
+    ColumnFilters.TryGetValue(Column.ColumnName, out var filter);
+
+    if (ShowWhenNull is true && filter is null)
+    {
+        <FluentButton Appearance="Appearance.Outline"
+                      IconStart="@(new Icons.Regular.Size20.Add())"
+                      OnClick="AddFilter"
+                      Style="width: 100%;">
+            @($"Agregar filtro para {Column.Title}")
+        </FluentButton>
+    }
+    else if (lambdaExpression.IsColumnOfType(typeof(string)))
+    {
+        var stringFilters = filter as StringFilters ?? new StringFilters { Conditions = { new() } };
+        if (filter is not StringFilters)
+        {
+            ColumnFilters[Column.ColumnName] = stringFilters;
+        }
+        <EternetDataGridColumnStringFilter Label="@Column.Title"
+                                           FilterValue="stringFilters"
+                                           FilterValueChanged="@(async (StringFilters? newVal) =>
+                                           {
+                                                ColumnFilters[Column.ColumnName] = newVal;
+                                                await ColumnFiltersChanged.InvokeAsync(ColumnFilters);
+                                                await ApplyFiltersAndRefreshAsync();
+                                           })" />
+        <FluentButton Appearance="Appearance.Stealth"
+                      IconStart="@(new Icons.Regular.Size20.FilterDismiss())"
+                      OnClick="RemoveFilter"
+                      aria-label="Quitar filtro" />
+    }
+    else if (lambdaExpression.IsColumnOfType(typeof(bool)))
+    {
+        <EternetDataGridColumnBooleanFilter Label="@Column.Title"
+                                            FilterValue="ColumnFilters[Column.ColumnName] as bool?"
+                                            FilterValueChanged="@(async (bool? newVal) =>
+                                            {
+                                                ColumnFilters[Column.ColumnName] = newVal;
+                                                await ColumnFiltersChanged.InvokeAsync(ColumnFilters);
+                                                await ApplyFiltersAndRefreshAsync();
+                                            })" />
+        <FluentButton Appearance="Appearance.Stealth"
+                      IconStart="@(new Icons.Regular.Size20.FilterDismiss())"
+                      OnClick="RemoveFilter"
+                      aria-label="Quitar filtro" />
+    }
+    else if (lambdaExpression.IsColumnOfType(typeof(DateTime)))
+    {
+        <EternetDataGridColumnDateFilter Label="@Column.Title"
+                                         FilterDate="ColumnFilters[Column.ColumnName] as DateTime?"
+                                         FilterDateChanged="@(async (DateTime? newVal) =>
+                                         {
+                                                ColumnFilters[Column.ColumnName] = newVal;
+                                                await ColumnFiltersChanged.InvokeAsync(ColumnFilters);
+                                                await ApplyFiltersAndRefreshAsync();
+                                         })" />
+        <FluentButton Appearance="Appearance.Stealth"
+                      IconStart="@(new Icons.Regular.Size20.FilterDismiss())"
+                      OnClick="RemoveFilter"
+                      aria-label="Quitar filtro" />
+    }
+    else if (lambdaExpression.IsColumnNumericType() ||
+             (Nullable.GetUnderlyingType(lambdaExpression.GetPropertyType()) is Type t && IsNumericType(t)))
+    {
+        var numberFilter = filter as NumericFilter ?? new NumericFilter();
+        if (filter is not NumericFilter)
+        {
+            ColumnFilters[Column.ColumnName] = numberFilter;
+        }
+        <EternetDataGridColumnNumberFilter Label="@Column.Title"
+                                          FilterValue="numberFilter"
+                                          FilterValueChanged="@(async (NumericFilter? newVal) =>
+                                          {
+                                                ColumnFilters[Column.ColumnName] = newVal;
+                                                await ColumnFiltersChanged.InvokeAsync(ColumnFilters);
+                                                await ApplyFiltersAndRefreshAsync();
+                                          })" />
+        <FluentButton Appearance="Appearance.Stealth"
+                      IconStart="@(new Icons.Regular.Size20.FilterDismiss())"
+                      OnClick="RemoveFilter"
+                      aria-label="Quitar filtro" />
+    }
+    else if (lambdaExpression.GetPropertyType().IsEnum || Nullable.GetUnderlyingType(lambdaExpression.GetPropertyType())?.IsEnum == true)
+    {
+        var enumType = Nullable.GetUnderlyingType(lambdaExpression.GetPropertyType()) ?? lambdaExpression.GetPropertyType();
+        var parameters = new Dictionary<string, object?>
+        {
+            ["Label"] = Column.Title,
+            ["SelectedValue"] = filter,
+            ["SelectedValueChanged"] = CreateEnumCallback(enumType)
+        };
+        <DynamicComponent Type="@typeof(EternetDataGridColumnEnumFilter<>).MakeGenericType(enumType)" Parameters="@parameters" />
+        <FluentButton Appearance="Appearance.Stealth"
+                      IconStart="@(new Icons.Regular.Size20.FilterDismiss())"
+                      OnClick="RemoveFilter"
+                      aria-label="Quitar filtro" />
+    }
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public required GridColumnMetadata<TGridItem> Column { get; set; }
+
+    [Parameter, EditorRequired]
+    public required bool Filterable { get; set; }
+
+    [Parameter]
+    public bool ShowWhenNull { get; set; }
+
+    [Parameter, EditorRequired]
+    public required Dictionary<string, object?> ColumnFilters { get; set; }
+
+    [Parameter]
+    public EventCallback<Dictionary<string, object?>> ColumnFiltersChanged { get; set; }
+
+    [Parameter, EditorRequired]
+    public required Func<Task> ApplyFiltersAndRefreshAsync { get; set; }
+
+    private static bool IsNumericType(Type t) =>
+        t == typeof(int) || t == typeof(long) || t == typeof(short) ||
+        t == typeof(double) || t == typeof(decimal) || t == typeof(float);
+
+    private object CreateEnumCallback(Type enumType)
+    {
+        var method = GetType().GetMethod(nameof(OnEnumFilterChanged), BindingFlags.NonPublic | BindingFlags.Instance)!
+            .MakeGenericMethod(enumType);
+        var delegateType = typeof(Func<,>).MakeGenericType(enumType, typeof(Task));
+        var del = Delegate.CreateDelegate(delegateType, this, method);
+        var createMethod = typeof(EventCallbackFactory).GetMethods()
+            .First(m => m.Name == nameof(EventCallbackFactory.Create) && m.IsGenericMethod && m.GetParameters().Length == 2)
+            .MakeGenericMethod(enumType);
+        return createMethod.Invoke(EventCallback.Factory, new object[] { this, del })!;
+    }
+
+    private async Task OnEnumFilterChanged<TEnum>(TEnum? value) where TEnum : struct, Enum
+    {
+        ColumnFilters[Column.ColumnName] = value;
+        await ColumnFiltersChanged.InvokeAsync(ColumnFilters);
+        await ApplyFiltersAndRefreshAsync();
+    }
+
+    private void AddFilter()
+    {
+        var exp = Column.LambdaExpression;
+        if (exp.IsColumnOfType(typeof(string)))
+        {
+            var sf = new StringFilters { Conditions = { new() } };
+            ColumnFilters[Column.ColumnName] = sf;
+        }
+        else if (exp.IsColumnNumericType() || (Nullable.GetUnderlyingType(exp.GetPropertyType()) is Type t && IsNumericType(t)))
+        {
+            ColumnFilters[Column.ColumnName] = new NumericFilter();
+        }
+        else
+        {
+            ColumnFilters[Column.ColumnName] = null;
+        }
+        ColumnFiltersChanged.InvokeAsync(ColumnFilters);
+    }
+
+    private async Task RemoveFilter()
+    {
+        ColumnFilters[Column.ColumnName] = null;
+        await ColumnFiltersChanged.InvokeAsync(ColumnFilters);
+        await ApplyFiltersAndRefreshAsync();
+    }
+}

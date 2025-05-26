@@ -1,0 +1,31 @@
+@HostAddress = http://localhost:5159
+
+POST {{HostAddress}}/Accounting/journal-entries?Env=Test
+Content-Type: application/json
+{
+  "date": "2025-03-29",
+  "periodStatus": "Pending",
+  "description": "Test 3",
+  "journalDetails": [
+    {
+      "generalLedgerAccountId": 1,
+      "debit": 3.50,
+      "credit": null
+    },
+    {
+      "generalLedgerAccountId": 2,
+      "debit": null,
+      "credit": 3.50
+    }
+  ]
+}
+
+### GET by id
+GET {{HostAddress}}/Accounting/journal-entries/0196aae1-fc4c-7f6d-91a5-8da81b8bd380?Env=Test
+accept: text/plain
+
+
+### GET OData
+GET {{HostAddress}}/Accounting/general-ledger-accounts?%24top=50&%24filter=LedgerAccountType%20eq%20%27LiabilityAndEquity%27
+accept: application/json
+Env: Prod

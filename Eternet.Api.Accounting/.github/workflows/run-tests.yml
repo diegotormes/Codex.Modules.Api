@@ -1,0 +1,79 @@
+name: Run tests
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+  pull_request_target:
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: self-hosted
+    env:
+      DOTNET_VERSION: '9.0.x'
+      SOLUTION_PATH: 'tests/Eternet.Accounting.Api.Tests.sln'
+      RAM_PACKAGES: C:\RamNuget\packages
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event_name == 'workflow_dispatch'
+                  && github.ref || github.event.pull_request.head.sha }}
+
+    - name: Setup .NET
+      id: setup
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Init RAM‑disk
+      shell: pwsh
+      run: |
+        if (-not (Test-Path $Env:RAM_PACKAGES)) {
+          New-Item -ItemType Directory -Path $Env:RAM_PACKAGES | Out-Null
+        }
+
+    - name: Create global.json
+      shell: pwsh
+      run: |
+        dotnet new globaljson --force --sdk-version '${{ steps.setup.outputs.dotnet-version }}'
+     
+    - name: Restore packages
+      shell: pwsh
+      run: dotnet restore ${{ env.SOLUTION_PATH }} -p:RestorePackagesPath="${{ env.RAM_PACKAGES }}"
+
+    - name: Run tests
+      shell: pwsh
+      run: |
+        dotnet test ${{ env.SOLUTION_PATH }} `
+                    -c Release `
+                    -p:RestorePackagesPath="${{ env.RAM_PACKAGES }}" `
+                    --verbosity=minimal `
+                    --no-restore `
+                    --results-directory TestResults -- --report-trx --report-trx-filename AllTests.trx
+
+    - name: Publish test results
+      uses: Eternet/publish-unit-test-result-action/windows@v2
+      if: always()
+      with:
+        files: '**/TestResults/**/*.trx'
+        check_name: Tests
+        job_summary: true
+
+    - name: Debug TestResults
+      if: always()
+      run: dir **\TestResults\*
+  
+    - name: Upload TestResults artifact
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: TestResults
+        path: '**/TestResults/**/*.trx'
+        retention-days: 7

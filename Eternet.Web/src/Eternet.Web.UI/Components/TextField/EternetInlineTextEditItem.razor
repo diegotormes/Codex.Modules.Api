@@ -1,0 +1,41 @@
+﻿@namespace Eternet.Web.UI
+@using Eternet.Web.UI.Abstractions.Services
+
+@typeparam TItem where TItem : IEditableItem<string>
+
+<FluentStack Orientation="Orientation.Horizontal"
+             HorizontalAlignment="HorizontalAlignment.Left"
+             VerticalAlignment="VerticalAlignment.Center"
+             HorizontalGap="5">
+
+    <FluentButton IconStart="@(new Icons.Regular.Size16.Delete())"
+        OnClick="()=>RemoveItemClicked.InvokeAsync(Item)">
+    </FluentButton>
+
+    @if (Item.IsEditing)
+    {
+        <FluentButton IconStart="@(new Icons.Regular.Size16.Save())"
+            OnClick="()=>Save()">
+        </FluentButton>
+
+        <FluentTextField
+            Style="width:100%"
+            Autofocus="true"
+            @onkeyup="e => HandleKey(e)"
+            @bind-Value="Item.Value">
+        </FluentTextField>
+    }
+    else
+    {
+        <FluentButton IconStart="@(new Icons.Regular.Size16.Edit())"
+            OnClick="EditClick">
+        </FluentButton>
+
+        <FluentAnchor 
+            Href="#" 
+            Appearance="Appearance.Hypertext"
+            OnClick="EditClick">
+            @Item.Value
+        </FluentAnchor>
+    }
+</FluentStack>

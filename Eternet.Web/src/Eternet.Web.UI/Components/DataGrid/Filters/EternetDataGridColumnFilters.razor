@@ -1,0 +1,31 @@
+@namespace Eternet.Web.UI.Components.DataGrid
+@using Eternet.Web.UI.Abstractions.DataGrid
+@typeparam TGridItem
+
+<div class="column-filters" style="display: flex; margin-bottom: 10px;">
+    @foreach(var filter in FilterableColumns)
+    {
+        <div style="margin-right: 10px;">
+            <FluentTextField Label="@filter.Key" 
+                             Value="@(ColumnFilters[filter.Key] as string)"
+                             ValueChanged="value => OnFilterChanged(filter.Key, value)" />
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Dictionary<string, object?> ColumnFilters { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<Dictionary<string, object?>> ColumnFiltersChanged { get; set; }
+
+    [Parameter]
+    public Dictionary<string, GridColumnMetadata<TGridItem>> FilterableColumns { get; set; } = new();
+
+    private async Task OnFilterChanged(string key, string value)
+    {
+        ColumnFilters[key] = value;
+        await ColumnFiltersChanged.InvokeAsync(ColumnFilters);
+    }
+}

@@ -1,0 +1,78 @@
+@namespace Eternet.Web.UI
+
+<FluentCard AreaRestricted="false" Style="padding: 15px; margin-bottom: 10px;">
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="10">
+        <FluentLabel Typo="Typography.Subject">@Label</FluentLabel>
+
+        @if (FilterValue?.Conditions.Count > 1)
+        {
+            <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalGap="10">
+                <FluentLabel>Combinar condiciones usando:</FluentLabel>
+                <FluentSelect TOption="CombineOperator"
+                              Items="@combineOperatorOptions"
+                              OptionText="@(i => i.ToString())"
+                              OptionValue="@(i => i.ToString())"
+                              SelectedOption="@selectedCombineOperator"
+                              SelectedOptionChanged="@((CombineOperator newValue) => selectedCombineOperator = newValue)"
+                              Style="min-width: 80px;" />
+            </FluentStack>
+        }
+
+        @if (FilterValue?.Conditions.Count > 0)
+        {
+            <FluentDivider Role="DividerRole.Presentation" Style="margin-top: 10px; margin-bottom: 10px;" />
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="15">
+                @foreach (var condition in FilterValue?.Conditions ?? [])
+                {
+                    var currentCondition = condition;
+                    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8" VerticalAlignment="VerticalAlignment.Center" @key="currentCondition.Id">
+                        <FluentSelect TOption="FilterStringOperator"
+                                      Items="@filterOperatorOptions"
+                                      OptionText="@(i => i.ToString())"
+                                      OptionValue="@(i => i.ToString())"
+                                      SelectedOption="@currentCondition.Operator"
+                                      SelectedOptionChanged="@((FilterStringOperator newValue) => currentCondition.Operator = newValue)"
+                                      Style="min-width: 120px;">
+                        </FluentSelect>
+                        <FluentTextField Autofocus="true"
+                                         Immediate="true"
+                                         @bind-Value="currentCondition.Value"
+                                         @onkeydown="async (arg) => await OnKeyDown(arg)"
+                                         Placeholder="Valor..." Style="flex-grow: 1;">
+                        </FluentTextField>
+
+                        <FluentTooltip Anchor="fluentSwitch1">
+                            Ignorar<br />
+                            Mayusculas/Minusculas
+                        </FluentTooltip>
+                        <FluentSwitch Id="fluentSwitch1" @bind-Value=currentCondition.CaseInsensitive AriaLabel="Ignorar Mayusculas/Minusculas" />
+
+
+                        <FluentButton IconStart="@(new Icons.Regular.Size20.Delete())"
+                                      Appearance="Appearance.Stealth"
+                                      aria-label="Eliminar condición"
+                                      Title="Eliminar condición"
+                                      OnClick="@(() => RemoveCondition(currentCondition.Id))" />
+                    </FluentStack>
+                }
+            </FluentStack>
+            <FluentDivider Role="DividerRole.Presentation" Style="margin-top: 10px; margin-bottom: 10px;" />
+        }
+
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="10" HorizontalAlignment="HorizontalAlignment.End">
+            <FluentButton IconStart="@(new Icons.Regular.Size20.Add())" OnClick="async ()=> await AddCondition()">
+                Añadir Condición
+            </FluentButton>
+            <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size20.Filter())" OnClick="async () => await ApplyFilter()">
+                Aplicar Filtro
+            </FluentButton>
+            @if (FilterValue?.Conditions.Count > 0)
+            {
+                <FluentButton IconStart="@(new Icons.Regular.Size20.FilterDismiss())" OnClick="ClearFilter">
+                    Limpiar Filtro
+                </FluentButton>
+            }
+        </FluentStack>
+
+    </FluentStack>
+</FluentCard>

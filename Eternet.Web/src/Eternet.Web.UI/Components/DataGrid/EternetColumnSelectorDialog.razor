@@ -1,0 +1,41 @@
+﻿@namespace Eternet.Web.UI
+@using Eternet.Web.UI.Components.DataGrid.Models
+
+<FluentDialog Hidden="@(!Visible)"
+              @onkeydown="HandleKeyDownAsync"
+              Modal="true"
+              TrapFocus="true"
+              @ondialogdismiss="async (e) => await CloseDialogAsync()"
+              Style="max-width:560px;width:100%;"
+              role="dialog"
+              aria-labelledby="columnSelectorHeader">
+    <FluentDialogHeader>
+        <FluentLabel Typo="Typography.H4" id="columnSelectorHeader">Seleccionar Columnas y Configuraciones</FluentLabel>
+    </FluentDialogHeader>
+
+    <FluentDialogBody Style="padding-inline:24px;">
+        <FluentTabs @bind-ActiveId="_activeTab" TabChanged="OnTabChanged">
+            <FluentTab Id="columns" Label="Columnas">
+                <ColumnSelector ColumnStates="CurrentColumnStates"
+                                ColumnStatesChanged="CurrentColumnStatesChanged"
+                                OnColumnStatesChanged="OnColumnStatesChanged"
+                                @ref="_columnSelector" />
+            </FluentTab>
+            <FluentTab Id="presets" Label="Presets">
+                <PresetManager Configurations="SavedConfigurations"
+                               OnSave="OnSaveConfiguration"
+                               OnLoad="OnLoadConfiguration"
+                               OnDelete="OnDeleteConfiguration"
+                               OnSetDefault="OnSetDefaultConfiguration"
+                               @ref="_presetManager" />
+            </FluentTab>
+        </FluentTabs>
+    </FluentDialogBody>
+
+    <FluentDialogFooter>
+        <FluentButton Appearance="Appearance.Neutral" OnClick="CloseDialogAsync">Cancelar</FluentButton>
+        <FluentButton Appearance="Appearance.Accent"
+                      Disabled="@(!HasVisibleColumns)"
+                      OnClick="CommitAsync">Aplicar cambios</FluentButton>
+    </FluentDialogFooter>
+</FluentDialog>

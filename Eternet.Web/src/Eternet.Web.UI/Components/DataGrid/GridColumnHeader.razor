@@ -1,0 +1,162 @@
+@using System.Reflection
+@using Eternet.Web.UI.Components.DataGrid
+@using Eternet.Web.UI.Components.DataGrid.Models
+@using Invoices.Incoming.WebApi.Components.DataGrid
+@using Microsoft.FluentUI.AspNetCore.Components
+
+@typeparam TGridItem
+
+<FluentStack Orientation="Orientation.Horizontal"
+             VerticalAlignment="VerticalAlignment.Center"
+             HorizontalGap="5"
+             Style="width: 100%; justify-content: space-between; align-items: center; padding-right: 10px;">
+
+    <FluentButton Disabled="@(!AnyColumnActionEnabled(ColumnContext))"
+                  Id="@ColumnContext.Title"
+                  Appearance="Appearance.Stealth"
+                  Class="col-sort-button"
+                  Style="@GetWidthStyle(ColumnContext)"
+                  @onclick="async arg => await HandleColumnHeaderClickedAsync(ColumnContext)">
+        <FluentStack Orientation="Orientation.Horizontal"
+                     VerticalAlignment="VerticalAlignment.Center"
+                     HorizontalGap="4">
+            <span class="col-title-text">
+                @ColumnContext.Title
+            </span>
+            @if (Grid.SortByAscending.HasValue && ColumnContext.IsActiveSortColumn)
+            {
+                if (Grid.SortByAscending == true)
+                {
+                    <FluentIcon Value="@(new Icons.Regular.Size20.ArrowSortUp())" Style="opacity: 0.5" />
+                }
+                else
+                {
+                    <FluentIcon Value="@(new Icons.Regular.Size20.ArrowSortDown())" Style="opacity: 0.5" />
+                }
+            }
+        </FluentStack>
+    </FluentButton>
+
+    <FluentStack Orientation="Orientation.Horizontal"
+                 VerticalAlignment="VerticalAlignment.Center"
+                 HorizontalGap="0"
+                 Style="width: auto; flex-shrink: 0;">
+
+        <FluentButton Appearance="Appearance.Stealth"
+                      IconStart="@(new Icons.Regular.Size16.EyeOff())"
+                      OnClick="@(async (e) => { await HideColumn(ColumnContext.Title); })"
+                      aria-label="@($"Ocultar Columna {ColumnContext.Title}")" />
+
+        <FluentButton Appearance="Appearance.Stealth"
+                      IconStart="@(new Icons.Regular.Size16.ArrowSortUp())"
+                      OnClick="@(async (e) => await AddSortCriterionAsync(SortDirection.Ascending))"
+                      aria-label="Add ascending sort" />
+
+        <FluentButton Appearance="Appearance.Stealth"
+                      IconStart="@(new Icons.Regular.Size16.ArrowSortDown())"
+                      OnClick="@(async (e) => await AddSortCriterionAsync(SortDirection.Descending))"
+                      aria-label="Add descending sort" />
+
+        @if (IsInSortCriteria())
+        {
+            <FluentButton Appearance="Appearance.Stealth"
+                          IconStart="@(new Icons.Regular.Size16.Dismiss())"
+                          OnClick="@(async (e) => await RemoveSortCriterionAsync())"
+                          aria-label="Remove sort" />
+        }
+
+        @if (ColumnContext.ColumnOptions is not null)
+        {
+            <FluentButton Appearance="Appearance.Stealth"
+                          IconStart="@(new Icons.Regular.Size16.Filter())"
+                          OnClick="@(async (e) => { await Grid.ShowColumnOptionsAsync(ColumnContext); })"
+                          aria-label="@($"Opciones para Columna {ColumnContext.Title}")" />
+        }
+    </FluentStack>
+
+</FluentStack>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public required FluentDataGrid<TGridItem> Grid { get; set; }
+
+    [Parameter, EditorRequired]
+    public required ColumnBase<TGridItem> ColumnContext { get; set; }
+
+    [Parameter, EditorRequired]
+    public required List<EternetDataGridColumnState> DataGridColumnStates { get; set; }
+
+    [Parameter]
+    public EventCallback<List<EternetDataGridColumnState>> DataGridColumnStatesChanged { get; set; }
+
+    [Parameter, EditorRequired]
+    public required List<(string Column, SortDirection Direction)> SortCriteria { get; set; }
+
+    [Parameter]
+    public EventCallback<List<(string Column, SortDirection Direction)>> SortCriteriaChanged { get; set; }
+
+    private static string GetWidthStyle(ColumnBase<TGridItem> col)
+    {
+        var px = col.ColumnOptions is not null ? 40 : 20;
+        return $"width: calc(100% - {px}px)";
+    }
+
+    private bool AnyColumnActionEnabled(ColumnBase<TGridItem> col)
+    {
+        return col.Sortable is true || col.ColumnOptions != null || Grid.ResizableColumns;
+    }
+
+    //https://github.com/microsoft/fluentui-blazor/blob/c602f1d23b529f23c95998ec51df9b84b037997b/src/Core/Components/DataGrid/Columns/ColumnBase.razor.cs
+    private async ValueTask HandleColumnHeaderClickedAsync(ColumnBase<TGridItem> col)
+    {
+        var hasSorting = col.Sortable is true || col.IsDefaultSortColumn;
+        if (hasSorting)
+        {
+            await Grid.SortByColumnAsync(col);
+            var name = DataGridColumnStates.FirstOrDefault(s => s.Title == col.Title)?.ColumnName ?? col.Title ?? string.Empty;
+            var direction = Grid.SortByAscending == false ? SortDirection.Descending : SortDirection.Ascending;
+            SortCriteria.Clear();
+            SortCriteria.Add((name, direction));
+            await SortCriteriaChanged.InvokeAsync(SortCriteria);
+        }
+    }
+
+    private async ValueTask HideColumn(string? columnName)
+    {
+        if (string.IsNullOrEmpty(columnName))
+            return;
+        var col = DataGridColumnStates.FirstOrDefault(c => c.Title == columnName);
+        if (col != null)
+        {
+            col.IsVisible = false;
+            await DataGridColumnStatesChanged.InvokeAsync(DataGridColumnStates);
+        }
+    }
+
+    private bool IsInSortCriteria() =>
+        SortCriteria.Any(sc => sc.Column == (DataGridColumnStates.FirstOrDefault(s => s.Title == ColumnContext.Title)?.ColumnName ?? ColumnContext.Title));
+
+    private async ValueTask AddSortCriterionAsync(SortDirection direction)
+    {
+        var name = DataGridColumnStates.FirstOrDefault(s => s.Title == ColumnContext.Title)?.ColumnName ?? ColumnContext.Title ?? string.Empty;
+        var existing = SortCriteria.FindIndex(sc => sc.Column == name);
+        if (existing >= 0)
+        {
+            SortCriteria[existing] = (name, direction);
+        }
+        else
+        {
+            SortCriteria.Add((name, direction));
+        }
+        await SortCriteriaChanged.InvokeAsync(SortCriteria);
+    }
+
+    private async ValueTask RemoveSortCriterionAsync()
+    {
+        var name = DataGridColumnStates.FirstOrDefault(s => s.Title == ColumnContext.Title)?.ColumnName ?? ColumnContext.Title ?? string.Empty;
+        SortCriteria.RemoveAll(sc => sc.Column == name);
+        await SortCriteriaChanged.InvokeAsync(SortCriteria);
+    }
+
+}

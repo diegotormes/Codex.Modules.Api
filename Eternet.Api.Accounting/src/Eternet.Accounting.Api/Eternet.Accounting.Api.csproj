@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
+		<ServerGarbageCollection>True</ServerGarbageCollection>
+		<!--<SelfContained>True</SelfContained>-->
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591;MSIL</NoWarn>
+		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Temp\**" />
+	  <Content Remove="Temp\**" />
+	  <EmbeddedResource Remove="Temp\**" />
+	  <None Remove="Temp\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Eternet.AspNetCore.ServiceFabric" Version="9.0.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.5" />		
+		<PackageReference Update="Microsoft.Extensions.ApiDescription.Server" ExcludeAssets="build;buildTransitive;buildMultitargeting" PrivateAssets="all" />
+		<!-- Eternet -->
+		<PackageReference Include="Eternet.Crud.Relational" Version="1.0.3" />
+		<PackageReference Include="Eternet.Crud.Relational.Generator" Version="1.0.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Eternet.Mediator.Generator" Version="1.2.18">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Eternet.Mediator.SourceGenerator" Version="3.0.0-preview.34">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Eternet.Web.Infrastructure" Version="1.0.8" />
+		<!-- /Eternet -->
+
+		<PackageReference Include="Microsoft.AspNetCore.OData" Version="9.3.1" />
+		
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+		<PackageReference Include="FirebirdSql.EntityFrameworkCore.Firebird" Version="12.0.0" />
+
+		<PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.12.0-beta.1" />
+
+	</ItemGroup>
+
+	<ItemGroup>
+		<!--		
+		<ProjectReference Include="..\..\..\..\..\Eternet.AspNetCore\src\Eternet.Mediator\Eternet.Mediator\Eternet.Mediator.csproj" />		
+		<ProjectReference Include="..\..\..\..\..\Eternet.AspNetCore\src\Eternet.AspNetCore\Eternet.Crud.Relational\Eternet.Crud.Relational.csproj" />
+		<ProjectReference Include="..\..\..\..\..\Eternet.AspNetCore.ServiceFabric\src\ServiceFabric\Eternet.AspNetCore.ServiceFabric.csproj" />
+		<ProjectReference Include="..\..\..\..\..\Eternet.Web\src\Eternet.Web.Infrastructure\Eternet.Web.Infrastructure.csproj" />
+		-->
+		<!--<ProjectReference Include="..\..\..\Eternet.AspNetCore\src\Eternet.AspNetCore\Eternet.Crud.Relational\Eternet.Crud.Relational.csproj" />
+		<ProjectReference Include="..\..\..\Eternet.Web\src\Eternet.Web.Infrastructure\Eternet.Web.Infrastructure.csproj" />-->
+
+    <ProjectReference Include="..\Eternet.Accounting.Contracts\Eternet.Accounting.Contracts.csproj" />
+	</ItemGroup>
+
+</Project>

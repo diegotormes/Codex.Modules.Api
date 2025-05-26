@@ -1,0 +1,2 @@
+.max-h-64 { max-height: 16rem; }
+.space-y-4 > * + * { margin-top: 1rem; }

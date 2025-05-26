@@ -1,0 +1,31 @@
+﻿@namespace Eternet.Web.UI
+
+<FluentStack Orientation="Orientation.Horizontal"
+             HorizontalAlignment="HorizontalAlignment.Left"
+             VerticalAlignment="VerticalAlignment.Center"
+             HorizontalGap="5">
+
+    @if (_isEditing)
+    {
+        <EternetButton @ref="_buttonSave"
+                       TooltipText="Guardar y sincronizar"
+                       IconStart="@(new Icons.Regular.Size12.ArrowSync())"
+                       OnClick="async ()=> await SaveAsync()">
+        </EternetButton>
+
+        <FluentTextField Style="width:100%"
+                         Autofocus="true"
+                         Maxlength="_maxLength"
+                         @onkeyup="async e => await HandleKey(e)"
+                         @bind-Value="_value">
+        </FluentTextField>
+    }
+    else
+    {
+        <FluentAnchor Href="#"
+                      Appearance="Appearance.Hypertext"
+                      OnClick="EditClick">
+            @_value
+        </FluentAnchor>
+    }
+</FluentStack>

@@ -1,0 +1,11 @@
+@namespace Eternet.Web.UI
+@using Microsoft.FluentUI.AspNetCore.Components // Required for Fluent Components
+
+<div>
+    <FluentLabel Typo="Typography.Subject">@Label</FluentLabel>
+    <FluentSelect TOption="string" @bind-Value="@SelectedValue" Style="width: 100%;">
+        <FluentOption Value="@(null)">Todos</FluentOption>
+        <FluentOption Value="@("True")">Si</FluentOption>
+        <FluentOption Value="@("False")">No</FluentOption>
+    </FluentSelect>
+</div>

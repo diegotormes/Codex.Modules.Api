@@ -1,0 +1,68 @@
+@namespace Eternet.Web.UI
+@using Eternet.Web.UI.Components.DataGrid.Models
+
+<FluentCard Class="p-4 space-y-4">
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8" Class="w-full">
+        <FluentTextField @ref="_configNameInput"
+                        @bind-Value="_newName"
+                        Placeholder="Nombre de la configuración…"
+                        Autocomplete="off"
+                        Class="flex-1" />
+        <FluentButton Appearance="Appearance.Accent"
+                      IconStart="@(new Icons.Regular.Size16.Save())"
+                      Disabled="@string.IsNullOrWhiteSpace(_newName)"
+                      OnClick="SaveAsync">
+            Guardar
+        </FluentButton>
+    </FluentStack>
+
+    @if (Configurations.Any())
+    {
+        <FluentDataGrid TGridItem="EternetDataGridConfiguration"
+                        Items="OrderedConfigs.AsQueryable()"
+                        SelectionMode="DataGridSelectionMode.None"
+                        Class="w-full max-h-64 overflow-y-auto">
+            <TemplateColumn Title="Nombre">
+                @context!.Name
+                @if (context.Default)
+                {
+                    <FluentBadge Appearance="Appearance.Accent" Class="ml-2">Por defecto</FluentBadge>
+                }
+            </TemplateColumn>
+
+            <TemplateColumn Title="Acciones">
+                <FluentButton Size="ButtonSize.Small"
+                              Appearance="Appearance.Accent"
+                              IconStart="@(new Icons.Regular.Size16.Checkmark())"
+                              AriaLabel="@($"Aplicar {context.Name}")"
+                              OnClick="@(() => OnLoad.InvokeAsync(context.Name))" />
+
+                <FluentButton Size="ButtonSize.Small"
+                              Appearance="Appearance.Stealth"
+                              IconStart="@(new Icons.Regular.Size16.Delete())"
+                              AriaLabel="@($"Eliminar {context.Name}")"
+                              OnClick="@(() => ShowDeleteConfirm(context.Name))" />
+            </TemplateColumn>
+
+            <TemplateColumn Title="Predeterm." Class="text-center w-24">
+                <FluentCheckbox Value="@(_defaultName == context.Name)"
+                               ValueChanged="@(isChecked => OnDefaultChangedAsync(context.Name, isChecked))"
+                               AriaLabel="@($"Establecer {context.Name} por defecto")" />
+            </TemplateColumn>
+        </FluentDataGrid>
+    }
+    else
+    {
+        <FluentLabel>No hay configuraciones guardadas.</FluentLabel>
+    }
+</FluentCard>
+
+<FluentDialog Hidden="@(!_showDeleteConfirm)" Modal="true" TrapFocus="true">
+    <FluentDialogHeader>Eliminar Configuración</FluentDialogHeader>
+    <FluentDialogBody>¿Eliminar configuración '@_configToDelete'?</FluentDialogBody>
+    <FluentDialogFooter>
+        <FluentButton Appearance="Appearance.Accent" OnClick="ConfirmDeleteAsync">Eliminar</FluentButton>
+        <FluentButton Appearance="Appearance.Neutral" OnClick="CloseDeleteConfirm">Cancelar</FluentButton>
+    </FluentDialogFooter>
+</FluentDialog>
+

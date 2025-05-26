@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="xunit.v3" />
+		<PackageReference Include="xunit.runner.visualstudio" />
+		<PackageReference Include="Verify.XunitV3" />
+		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+	</ItemGroup>
+</Project>

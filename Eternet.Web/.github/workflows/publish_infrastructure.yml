@@ -1,0 +1,59 @@
+name: publish_infrastructure
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'src/Eternet.Web.Infrastructure/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'src/Eternet.Web.Infrastructure/**'
+
+jobs:
+  build:
+    runs-on: self-hosted
+    env:
+      src_dir: './src'
+      RAM_PACKAGES: C:\RamNuget\packages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'            
+      - name: Init RAM‑disk
+        shell: pwsh
+        run: |  
+         if (-not (Test-Path $Env:RAM_PACKAGES)) { New-Item -ItemType Directory -Path $Env:RAM_PACKAGES }
+      - name: Build
+        run: |
+         cd ${{ env.src_dir }}
+         dotnet restore -p:RestorePackagesPath="${{ env.RAM_PACKAGES }}"
+         dotnet build -c Release -p:RestorePackagesPath="${{ env.RAM_PACKAGES }}" --no-restore
+      - name: Test
+        shell: pwsh
+        run: |
+          cd ${{ env.src_dir }}
+          dotnet test `
+            -c Release `
+            -p:RestorePackagesPath="${{ env.RAM_PACKAGES }}" `
+            --verbosity=minimal `
+            --no-build --no-restore `
+            --results-directory TestResults -- --report-trx --report-trx-filename AllTests.trx
+      - name: Pack Eternet.Web.Infrastructure
+        run: |
+         cd ${{ env.src_dir }}
+         dotnet pack .\Eternet.Web.Infrastructure\Eternet.Web.Infrastructure.csproj -c Release -p:RestorePackagesPath="${{ env.RAM_PACKAGES }}" -o .\artifacts --no-build --no-restore
+      - name: Push to nuget
+        env:
+          NUGET_URL: https://api.nuget.org/v3/index.json
+        shell: pwsh
+        run: |
+          cd ${{ env.src_dir }}
+          iwr https://raw.githubusercontent.com/Eternet/github/refs/heads/main/scripts/push-to-nuget.ps1 -OutFile push-to-nuget.ps1
+          ./push-to-nuget.ps1 -artifacts "./artifacts"

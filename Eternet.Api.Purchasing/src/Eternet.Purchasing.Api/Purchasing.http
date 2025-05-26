@@ -1,0 +1,16 @@
+@HostAddress = http://localhost:5158
+
+POST {{HostAddress}}/Liabilities/manual?Env=Test
+Content-Type: application/json
+{
+  "vendorTaxId": "30525274450",
+  "issueDate": "2025-05-15",
+  "description": "FAECYS",
+  "totalAmount": 1001,
+  "expenseId": 1082,
+  "dueDate": "2025-05-15"
+}
+
+### GET by id
+GET {{HostAddress}}/Purchasing/invoices/267D8248-5C9F-498B-AEA8-89D3410E4085?Env=Test
+accept: text/plain

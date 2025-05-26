@@ -1,0 +1,90 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36109.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eternet.Accounting.Api", "Eternet.Accounting.Api\Eternet.Accounting.Api.csproj", "{9FBC1757-DB7B-F9C3-3AED-51A724858230}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eternet.Accounting.Contracts", "Eternet.Accounting.Contracts\Eternet.Accounting.Contracts.csproj", "{79DE7A60-BF56-C18F-A89E-D1505EB0C17C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eternet.Accounting.Api.Tests", "..\tests\Eternet.Accounting.Api.Tests\Eternet.Accounting.Api.Tests.csproj", "{E340D753-05B1-24B9-4B0F-E9517DE064AE}"
+EndProject
+Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "Eternet.Accounting", "Eternet.Accounting\Eternet.Accounting.sfproj", "{08799240-C002-43B0-94E1-C29FC1DD68EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{089100B1-113F-4E66-888A-E83F3999EAFD}"
+	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+		..\.gitignore = ..\.gitignore
+		..\AGENTS.md = ..\AGENTS.md
+		..\copilot-instructions.md = ..\copilot-instructions.md
+		..\.github\workflows\deploy.yml = ..\.github\workflows\deploy.yml
+		..\tests\Directory.Build.props = ..\tests\Directory.Build.props
+		..\tests\Directory.Build.targets = ..\tests\Directory.Build.targets
+		..\tests\Directory.Packages.props = ..\tests\Directory.Packages.props
+		init.sh = init.sh
+		Eternet.Accounting\packages.config = Eternet.Accounting\packages.config
+		..\.github\workflows\run-tests.yml = ..\.github\workflows\run-tests.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eternet.Accounting.Contracts.Tests", "..\tests\Eternet.Accounting.Contracts.Tests\Eternet.Accounting.Contracts.Tests.csproj", "{0BD89C62-F1E4-8CD4-D41E-2F1BA28F568C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9FBC1757-DB7B-F9C3-3AED-51A724858230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FBC1757-DB7B-F9C3-3AED-51A724858230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FBC1757-DB7B-F9C3-3AED-51A724858230}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9FBC1757-DB7B-F9C3-3AED-51A724858230}.Debug|x64.Build.0 = Debug|Any CPU
+		{9FBC1757-DB7B-F9C3-3AED-51A724858230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FBC1757-DB7B-F9C3-3AED-51A724858230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FBC1757-DB7B-F9C3-3AED-51A724858230}.Release|x64.ActiveCfg = Release|Any CPU
+		{9FBC1757-DB7B-F9C3-3AED-51A724858230}.Release|x64.Build.0 = Release|Any CPU
+		{79DE7A60-BF56-C18F-A89E-D1505EB0C17C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79DE7A60-BF56-C18F-A89E-D1505EB0C17C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79DE7A60-BF56-C18F-A89E-D1505EB0C17C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{79DE7A60-BF56-C18F-A89E-D1505EB0C17C}.Debug|x64.Build.0 = Debug|Any CPU
+		{79DE7A60-BF56-C18F-A89E-D1505EB0C17C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79DE7A60-BF56-C18F-A89E-D1505EB0C17C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79DE7A60-BF56-C18F-A89E-D1505EB0C17C}.Release|x64.ActiveCfg = Release|Any CPU
+		{79DE7A60-BF56-C18F-A89E-D1505EB0C17C}.Release|x64.Build.0 = Release|Any CPU
+		{E340D753-05B1-24B9-4B0F-E9517DE064AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E340D753-05B1-24B9-4B0F-E9517DE064AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E340D753-05B1-24B9-4B0F-E9517DE064AE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E340D753-05B1-24B9-4B0F-E9517DE064AE}.Debug|x64.Build.0 = Debug|Any CPU
+		{E340D753-05B1-24B9-4B0F-E9517DE064AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E340D753-05B1-24B9-4B0F-E9517DE064AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E340D753-05B1-24B9-4B0F-E9517DE064AE}.Release|x64.ActiveCfg = Release|Any CPU
+		{E340D753-05B1-24B9-4B0F-E9517DE064AE}.Release|x64.Build.0 = Release|Any CPU
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Debug|Any CPU.Build.0 = Debug|x64
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Debug|Any CPU.Deploy.0 = Debug|x64
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Debug|x64.ActiveCfg = Debug|x64
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Debug|x64.Build.0 = Debug|x64
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Debug|x64.Deploy.0 = Debug|x64
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Release|Any CPU.ActiveCfg = Release|x64
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Release|Any CPU.Build.0 = Release|x64
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Release|Any CPU.Deploy.0 = Release|x64
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Release|x64.ActiveCfg = Release|x64
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Release|x64.Build.0 = Release|x64
+		{08799240-C002-43B0-94E1-C29FC1DD68EE}.Release|x64.Deploy.0 = Release|x64
+		{0BD89C62-F1E4-8CD4-D41E-2F1BA28F568C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD89C62-F1E4-8CD4-D41E-2F1BA28F568C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD89C62-F1E4-8CD4-D41E-2F1BA28F568C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0BD89C62-F1E4-8CD4-D41E-2F1BA28F568C}.Debug|x64.Build.0 = Debug|Any CPU
+		{0BD89C62-F1E4-8CD4-D41E-2F1BA28F568C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD89C62-F1E4-8CD4-D41E-2F1BA28F568C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BD89C62-F1E4-8CD4-D41E-2F1BA28F568C}.Release|x64.ActiveCfg = Release|Any CPU
+		{0BD89C62-F1E4-8CD4-D41E-2F1BA28F568C}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {154BD6F9-CB6E-491C-BB79-D6282852142B}
+	EndGlobalSection
+EndGlobal

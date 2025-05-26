@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<OutputType>Exe</OutputType>    
+		<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>		
+		<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <NoWarn>$(NoWarn);MSB3270</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="xunit.runner.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoFixture.AutoNSubstitute" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+		<PackageReference Include="AwesomeAssertions" />
+		<PackageReference Include="System.ComponentModel.TypeConverter" />
+	</ItemGroup>
+  
+	<ItemGroup>
+    
+	  <ProjectReference Include="..\..\src\Eternet.Accounting.Contracts\Eternet.Accounting.Contracts.csproj" />
+	</ItemGroup>
+
+</Project>

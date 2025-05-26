@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <NoWarn>$(NoWarn);MSB3270</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoFixture.AutoNSubstitute" />
+    <PackageReference Include="FirebirdDb.Embedded.V3.NativeAssets.Linux.X64" />
+    <PackageReference Include="FirebirdDb.Embedded.V3.NativeAssets.Windows.X64" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="System.ComponentModel.TypeConverter" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+    <PackageReference Include="FirebirdDb.Embedded.V3.NativeAssets.Windows.X64" Version="1.0.6" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+    <PackageReference Include="FirebirdDb.Embedded.V3.NativeAssets.Linux.X64" Version="1.0.6" PrivateAssets="all" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <ProjectReference Include="..\..\src\Eternet.Accounting.Api\Eternet.Accounting.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\ETERNET.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

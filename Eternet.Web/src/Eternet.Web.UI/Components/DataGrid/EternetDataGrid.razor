@@ -1,0 +1,158 @@
+﻿@namespace Eternet.Web.UI
+
+@using System.Reflection
+@using Eternet.Web.UI.Components.DataGrid
+@using Eternet.Web.UI.Components.DataGrid.Models
+@using Invoices.Incoming.WebApi.Components.DataGrid
+
+@typeparam TGridItem
+@implements IAsyncDisposable
+
+<CascadingValue Value="this" IsFixed="true">
+    <FluentStack Orientation="Orientation.Vertical">
+        <GridToolbar ShowClearFilters="ShowClearFilters"
+                     @bind-ShowColumnSelectorDialog="_showColumnSelectorDialog"
+                     @bind-ShowFilterPanel="_showFilterPanel"
+                     @bind-GeneralFilter="@_generalFilter"
+                     @bind-GeneralFilterIgnoreCase="@_generalFilterIgnoreCase"
+                     ApplyFiltersAndRefreshAsync="@ApplyFiltersAndRefreshAsync"
+                     ClearFiltersAsync="@ClearFiltersAsync" />
+
+        <FluentSplitter Orientation="Orientation.Horizontal"
+                        Collapsed="@(!_showFilterPanel)"
+                        Panel2Size="var(--datagrid-filter-width)"
+                        Panel2MinSize="var(--datagrid-filter-width)"
+                        BarSize="4">
+            <Panel1>
+                <div style="min-width:0px; overflow-x:hidden; overflow-y:visible; position:relative">
+                    <FluentDataGrid TGridItem="TGridItem"
+                                    @ref="_grid"
+                                    Pagination="_paginationState"
+                                    Items="@_items"
+                                    GridTemplateColumns="@_gridTemplateColumns"
+                                    AutoFit="true"
+                                    RowSize="DataGridRowSize.Medium"
+                                    Loading="@_isLoading"
+                                    ResizableColumns="true"
+                                    HeaderCellAsButtonWithMenu="true"
+                                    ColumnResizeLabels="@_resizeLabels"
+                                    OnCloseColumnResize="HandleColumnResizedAsync"
+                                    ColumnOptionsLabels="@_optionsLabels"
+                                    ColumnSortLabels="@_sortLabels">
+
+                        @foreach (var columnState in _currentColumnStates.Where(c => c.IsVisible))
+                        {
+                            var localColumnState = columnState;
+                            if (_allColumns.TryGetValue(localColumnState.ColumnName, out var column))
+                            {
+                                _columnFilters.TryGetValue(column.ColumnName, out var filter);
+                                var filterable = _filterableColumns.ContainsKey(column.ColumnName);
+                                var isFiltered = filter != null && (!(filter is StringFilters sf) || sf.IsActive);
+
+                                if (InlineEditors.TryGetValue(column.ColumnName, out var editor))
+                                {
+                                    <TemplateColumn Title="@column.Title"
+                                                    SortBy="@GetSortBy(column.ColumnName)"
+                                                    Filtered="@isFiltered"
+                                                    Sortable="@column.AllowsSorting">
+@*                                     <HeaderCellItemTemplate Context="colContext">
+                                        <GridColumnHeader Grid="_grid"
+                                                          ColumnContext="colContext"
+                                                          @bind-DataGridColumnStates="_currentColumnStates"
+                                                          @bind-SortCriteria="_sortCriteria" />
+                                    </HeaderCellItemTemplate>
+ *@                                        <ChildContent>
+                                            <InlineTextEdit EntityId="@GetViewId(context, editor.ViewIdSelector)"
+                                                            Value="@GetString(context, column.ColumnName)"
+                                                            OnUpdate="UpdateItemsAsync"
+                                                            Editor="editor" />
+                                        </ChildContent>
+                                        <ColumnOptions>
+                                            <ColumnFilter Column="column"
+                                                          Filterable="filterable"
+                                                          @bind-ColumnFilters="_columnFilters"
+                                                          ApplyFiltersAndRefreshAsync="async () => await ApplyFiltersAndRefreshAsync(closeColumnOptions: true)" />
+                                        </ColumnOptions>
+                                    </TemplateColumn>
+                                }
+                                else
+                                {
+                                    <PropertyColumn Property="@column.PropertyExpression"
+                                                    Title="@column.Title"
+                                                    SortBy="@GetSortBy(column.ColumnName)"
+                                                    Filtered="@isFiltered"
+                                                    Sortable="@column.AllowsSorting">
+@*                                     <HeaderCellItemTemplate Context="colContext">
+                                        <GridColumnHeader Grid="_grid"
+                                                          ColumnContext="colContext"
+                                                          @bind-DataGridColumnStates="_currentColumnStates"
+                                                          @bind-SortCriteria="_sortCriteria" />
+                                    </HeaderCellItemTemplate>
+ *@                                        <ColumnOptions>
+                                            <ColumnFilter Column="column"
+                                                          Filterable="filterable"
+                                                          @bind-ColumnFilters="_columnFilters"
+                                                          ApplyFiltersAndRefreshAsync="async () => await ApplyFiltersAndRefreshAsync(closeColumnOptions: true)" />
+                                        </ColumnOptions>
+                                    </PropertyColumn>
+                                }
+                            }
+                            else
+                            {
+                                <TemplateColumn Title="@($"Error: {localColumnState.ColumnName}")">...</TemplateColumn>
+                            }
+                        }
+
+                        @if (ChildContent != null)
+                        {
+                            @ChildContent
+                        }
+
+                        @if (Actions.Any())
+                        {
+                            <TemplateColumn Title="Acciones" Align="Align.End">
+                                <ChildContent>
+                                    <div @onclick:stopPropagation="true">
+                                        <EternetMenuButton ButtonAppearance="Appearance.Lightweight"
+                                                           Icon="@(new Icons.Regular.Size16.MoreHorizontal())"
+                                                           Context="context"
+                                                           Items="@Actions" />
+                                    </div>
+                                </ChildContent>
+                            </TemplateColumn>
+                        }
+                    </FluentDataGrid>
+                </div>
+            </Panel1>
+            <Panel2>
+                <FluentStack Orientation="Orientation.Vertical" Class="filter-panel">
+                    <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween">
+                        <FluentLabel Typo="Typography.H5">Filtros Panel</FluentLabel>
+                        <FluentButton Appearance="Appearance.Stealth"
+                                      OnClick="FlipShowFilterPanel"
+                                      IconStart="@(new Icons.Regular.Size20.DismissSquare())"
+                                      TooltipText="Cerrar"
+                                      aria-label="Cerrar" />
+                    </FluentStack>
+
+                    <AdvancedFilterPanel TGridItem="TGridItem"
+                                         FilterableColumns="_filterableColumns"
+                                         @bind-ColumnFilters="_columnFilters"
+                                         ApplyFiltersAndRefreshAsync="ApplyFiltersAndRefreshAsync"
+                                         ClearFiltersAsync="ClearFiltersAsync" />
+                </FluentStack>
+            </Panel2>
+        </FluentSplitter>
+        <EternetPaginator State="_paginationState" />
+    </FluentStack>
+</CascadingValue>
+
+
+<EternetColumnSelectorDialog @bind-visible="_showColumnSelectorDialog"
+                             CurrentColumnStates="_currentColumnStates"
+                             SavedConfigurations="_savedConfigurations"
+                             OnSaveConfiguration="HandleSaveConfigurationAsync"
+                             OnLoadConfiguration="HandleLoadConfigurationAsync"
+                             OnDeleteConfiguration="HandleDeleteConfigurationAsync"
+                             OnSetDefaultConfiguration="HandleSetDefaultConfigurationAsync"
+                             OnColumnStatesChanged="OnColumnStatesChanged" />

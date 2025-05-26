@@ -1,0 +1,58 @@
+name: Deploy
+on:
+  pull_request_target:
+    types: [closed]
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: 'Skip tests and force deploy'
+        required: true
+        default: 'false'
+        type: boolean
+jobs:
+  deploy:
+    runs-on: [self-hosted]
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'deploy')) }}
+    env:
+      DOTNET_VERSION: '9.0.x'
+      RUN_TESTS: ${{ github.event.inputs.skip_tests == 'false' || contains(github.event.pull_request.labels.*.name, 'deploy') }}
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Create .NET global.json
+      run: |
+        dotnet new globaljson --sdk-version $env:DOTNET_VERSION
+
+    - name: Run tests
+      if: ${{ env.RUN_TESTS == 'true' }}
+      run: |
+        dotnet test tests/Eternet.Accounting.Api.Tests/Eternet.Accounting.Api.Tests.csproj -c Release
+
+    - name: Download SF Packages
+      shell: pwsh
+      run: |
+        iwr https://github.com/Eternet/github/raw/main/files/packages/Microsoft.VisualStudio.Azure.Fabric.MSBuild.1.7.9.zip -OutFile package.zip
+
+    - name: Create packages folder
+      shell: pwsh
+      run: New-Item -ItemType Directory -Path "packages" -Force
+
+    - name: Expand package.zip
+      shell: pwsh
+      run: Expand-Archive -Path "package.zip" -DestinationPath "src/packages" -Force
+      
+    - name: Deploy app
+      run: |
+        dotnet publish src/Eternet.Accounting/Eternet.Accounting.sfproj -c Release
+        iwr https://raw.githubusercontent.com/Eternet/github/refs/heads/main/scripts/deploy_service_fabric.ps1 -OutFile deploy-service-fabric.ps1        
+        pwsh ./deploy-service-fabric.ps1 -serviceFabricProjectPath "src\Eternet.Accounting" -connectionEndpoint "servicefabric.eternet.cc:19000"

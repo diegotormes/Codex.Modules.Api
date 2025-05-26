@@ -1,0 +1,52 @@
+﻿@namespace Eternet.Web.UI
+@using Eternet.Web.UI.Abstractions.DataGrid
+@using Eternet.Web.UI.Components.DataGrid
+@using Eternet.Web.UI.Components.DataGrid.Models
+
+@typeparam TGridItem
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="8">
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="8" Style="overflow-y:auto; max-height:400px;">
+        @foreach (var column in FilterableColumns.Values)
+        {
+            <ColumnFilter TGridItem="TGridItem"
+                          Column="column"
+                          Filterable="true"
+                          ShowWhenNull="true"
+                          @bind-ColumnFilters="ColumnFilters"
+                          ApplyFiltersAndRefreshAsync="ApplyFiltersAndRefreshAsync" />
+        }
+    </FluentStack>
+
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End" HorizontalGap="8" Style="margin-top:10px;">
+        <FluentButton Appearance="Appearance.Stealth"
+                      IconStart="@(new Icons.Regular.Size20.FilterDismiss())"
+                      aria-label="Limpiar filtros"
+                      OnClick="async () => await ClearFiltersAsync()">
+            Limpiar Filtros
+        </FluentButton>
+        <FluentButton Appearance="Appearance.Accent"
+                      IconStart="@(new Icons.Regular.Size20.Checkmark())"
+                      aria-label="Aplicar filtros"
+                      OnClick="async () => await ApplyFiltersAndRefreshAsync()">
+            Aplicar
+        </FluentButton>
+    </FluentStack>
+</FluentStack>
+
+@code {
+    [Parameter, EditorRequired]
+    public required Dictionary<string, GridColumnMetadata<TGridItem>> FilterableColumns { get; set; }
+
+    [Parameter, EditorRequired]
+    public required Dictionary<string, object?> ColumnFilters { get; set; }
+
+    [Parameter]
+    public EventCallback<Dictionary<string, object?>> ColumnFiltersChanged { get; set; }
+
+    [Parameter, EditorRequired]
+    public required Func<Task> ApplyFiltersAndRefreshAsync { get; set; }
+
+    [Parameter, EditorRequired]
+    public required Func<Task> ClearFiltersAsync { get; set; }
+}

@@ -1,0 +1,11 @@
+﻿@namespace Eternet.Web.UI
+
+<div class="@GetClass()">
+    <FluentTextField Label="@Label"
+                     Value="@Value"
+                     ValueChanged="InputValueChangedAsync"
+                     Required="@Required"
+                     Immediate="@Immediate"
+                     Class="@GetClass()" />
+    <FluentValidationMessage For="@For" />
+</div>

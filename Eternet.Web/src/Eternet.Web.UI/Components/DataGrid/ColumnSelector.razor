@@ -1,0 +1,126 @@
+@namespace Eternet.Web.UI
+@using Eternet.Web.UI.Components.DataGrid.Models
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
+    <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalGap="8">
+        <FluentLabel Typo="Typography.Subject">Columnas visibles</FluentLabel>
+        <FluentBadge aria-live="polite" style="transition:transform .2s">@($"{VisibleColumnCount}/{ColumnStates.Count} visibles")</FluentBadge>
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+            <FluentButton Appearance="Appearance.Stealth" Style="border-radius:16px" OnClick="() => SetAll(true)">Todos</FluentButton>
+            <FluentButton Appearance="Appearance.Stealth" Style="border-radius:16px" OnClick="() => SetAll(false)">Ninguno</FluentButton>
+        </FluentStack>
+    </FluentStack>
+    <FluentSearch Immediate="true" Placeholder="Filtrar columnas..." Style="margin-block:8px;" @bind-Value="_filter" />
+    <div style="max-height: 250px; overflow-y: auto; padding: 10px;">
+        @if (ColumnStates.Count > 50)
+        {
+            <Virtualize Items="FilteredColumnStates.ToList()" Context="state" TItem="EternetDataGridColumnState">
+                <div draggable="true"
+                     style="cursor:grab"
+                     @ondragstart="() => OnDragStart(state)"
+                     @ondrop="async () => await OnDropAsync(state)"
+                     @ondragover:preventDefault
+                     @key="state.ColumnName">
+                    <FluentCheckbox Density="Density.Compact"
+                                    Value="state.IsVisible"
+                                    ValueChanged="async v => await OnVisibilityChangedAsync(state, v)"
+                                    Label="@state.Title" />
+                </div>
+            </Virtualize>
+        }
+        else
+        {
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="8">
+                @foreach (var columnState in FilteredColumnStates)
+                {
+                    var localColState = columnState;
+                    <div draggable="true"
+                         style="cursor:grab"
+                         @ondragstart="() => OnDragStart(localColState)"
+                         @ondrop="async () => await OnDropAsync(localColState)"
+                         @ondragover:preventDefault
+                         @key="localColState.ColumnName">
+                        <FluentCheckbox Density="Density.Compact"
+                                        Value="@localColState.IsVisible"
+                                        ValueChanged="async v => await OnVisibilityChangedAsync(localColState, v)"
+                                        Label="@localColState.Title" />
+                    </div>
+                }
+            </FluentStack>
+        }
+    </div>
+</FluentStack>
+
+@code {
+    [Parameter, EditorRequired]
+    public required List<EternetDataGridColumnState> ColumnStates { get; set; }
+
+    [Parameter]
+    public EventCallback<List<EternetDataGridColumnState>> ColumnStatesChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<List<EternetDataGridColumnState>> OnColumnStatesChanged { get; set; }
+
+    private string _filter = string.Empty;
+    private EternetDataGridColumnState? _draggedState;
+
+    private IEnumerable<EternetDataGridColumnState> FilteredColumnStates => ColumnStates
+        .Where(c => string.IsNullOrWhiteSpace(_filter) || c.Title.Contains(_filter, StringComparison.OrdinalIgnoreCase));
+
+    private int VisibleColumnCount => ColumnStates.Count(c => c.IsVisible);
+
+
+    public void ClearFilter() => _filter = string.Empty;
+
+    private async Task SetAll(bool visible)
+    {
+        foreach (var state in ColumnStates)
+        {
+            state.IsVisible = visible;
+        }
+        await NotifyChangeAsync();
+    }
+
+    private async Task OnVisibilityChangedAsync(EternetDataGridColumnState state, bool isVisible)
+    {
+        state.IsVisible = isVisible;
+        await NotifyChangeAsync();
+    }
+
+    private void OnDragStart(EternetDataGridColumnState state) => _draggedState = state;
+
+    private async Task OnDropAsync(EternetDataGridColumnState targetState)
+    {
+        if (_draggedState is null || ReferenceEquals(_draggedState, targetState))
+            return;
+
+        var fromIndex = ColumnStates.IndexOf(_draggedState);
+        var toIndex = ColumnStates.IndexOf(targetState);
+        if (fromIndex == -1 || toIndex == -1)
+            return;
+
+        ColumnStates.RemoveAt(fromIndex);
+        if (toIndex > fromIndex)
+        {
+            toIndex--;
+        }
+        ColumnStates.Insert(toIndex, _draggedState);
+        _draggedState = null;
+        await NotifyChangeAsync().ConfigureAwait(false);
+    }
+
+    private async Task NotifyChangeAsync()
+    {
+        if (OnColumnStatesChanged.HasDelegate)
+        {
+            await OnColumnStatesChanged.InvokeAsync(ColumnStates).ConfigureAwait(false);
+        }
+
+        if (ColumnStatesChanged.HasDelegate)
+        {
+            await ColumnStatesChanged.InvokeAsync(ColumnStates).ConfigureAwait(false);
+        }
+        StateHasChanged();
+    }
+}

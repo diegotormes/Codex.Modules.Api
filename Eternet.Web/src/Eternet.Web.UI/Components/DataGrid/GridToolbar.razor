@@ -1,0 +1,151 @@
+﻿@using System.Reflection
+@using Eternet.Web.UI.Components.DataGrid
+@using Eternet.Web.UI.Components.DataGrid.Models
+@using Invoices.Incoming.WebApi.Components.DataGrid
+
+@implements IDisposable
+
+<FluentToolbar Orientation="Orientation.Horizontal">
+    <FluentStack Style="padding-top: 10px;" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalGap="10">
+        <FluentSearch @ref="searchInputRef"
+                      Immediate="true"
+                      Placeholder="Buscar (Ctrl+B)"
+                      Style="width:480px; min-width:100px"
+                      @onkeyup="async (e) => await HandleGeneralFilterKey(e)"
+                      @bind-Value="_generalFilter" />
+
+        <FluentTooltip Anchor="general-filter-case-switch"
+                       TooltipText="Apply filters" AriaLabel="Apply filters"
+                       OnClick="async () => await ApplyFiltersAndRefreshAsync()"
+                       IconStart="@(new Icons.Regular.Size20.Column())" />
+
+        <FluentSwitch Id="general-filter-case-switch" @bind-Value="_generalFilterIgnoreCase" AriaLabel="Ignorar Mayúsculas/Minúsculas" />
+
+        <EternetButton IconStart="@(new Icons.Regular.Size16.Checkmark())"
+                       OnClick="async ()=> await ApplyFiltersAndRefreshAsync()">
+            Aplicar
+        </EternetButton>
+
+        <FluentSpacer />
+        @if (ShowClearFilters)
+        {
+            <FluentButton Appearance="Appearance.Stealth"
+                          OnClick="async ()=> await ClearFiltersAsync()"
+                          IconStart="@(new Icons.Regular.Size20.FilterDismiss())"
+                          TooltipText="Eliminar Filtros" aria-label="Eliminar Filtros" />
+        }
+        <FluentButton Appearance="Appearance.Stealth"
+                      OnClick="SetShowColumnSelectorDialog"
+                      IconStart="@(new Icons.Regular.Size20.Column())" />
+
+        @if (ShowFilterPanel is false)
+        {
+            <FluentButton Appearance="Appearance.Stealth"
+                          OnClick="FlipShowFilterPanel"
+                          IconStart="@(new Icons.Regular.Size20.Filter())"
+                          TooltipText="Filtros Avanzados Panel" aria-label="Filtros Avanzados Panel" />
+        }
+    </FluentStack>
+</FluentToolbar>
+
+@code
+{
+    [Inject] public required IKeyCodeService KeyCodeService { get; set; }
+
+    [Parameter, EditorRequired]
+    public required bool ShowColumnSelectorDialog { get; set; }
+    [Parameter, EditorRequired]
+    public required EventCallback<bool> ShowColumnSelectorDialogChanged { get; set; }
+
+    [Parameter, EditorRequired]
+    public required bool ShowFilterPanel { get; set; }
+    [Parameter, EditorRequired]
+    public required EventCallback<bool> ShowFilterPanelChanged { get; set; }
+
+    [Parameter, EditorRequired]
+    public required bool ShowClearFilters { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string GeneralFilter { get; set; }
+    [Parameter, EditorRequired]
+    public required EventCallback<string?> GeneralFilterChanged { get; set; }
+
+    [Parameter, EditorRequired]
+    public required bool GeneralFilterIgnoreCase { get; set; }
+    [Parameter, EditorRequired]
+    public required EventCallback<bool> GeneralFilterIgnoreCaseChanged { get; set; }
+
+
+    [Parameter, EditorRequired]
+    public required Func<Task> ApplyFiltersAndRefreshAsync { get; set; }
+
+    [Parameter, EditorRequired]
+    public required Func<Task> ClearFiltersAsync { get; set; }
+
+    private FluentSearch searchInputRef = null!;
+
+    private string _generalFilter
+    {
+        get => GeneralFilter;
+        set
+        {
+            if (GeneralFilter != value)
+            {
+                GeneralFilter = value;
+                GeneralFilterChanged.InvokeAsync(value);
+            }
+        }
+
+    }
+    private bool _generalFilterIgnoreCase
+    {
+        get => GeneralFilterIgnoreCase;
+        set
+        {
+            if (GeneralFilterIgnoreCase != value)
+            {
+                GeneralFilterIgnoreCase = value;
+                GeneralFilterIgnoreCaseChanged.InvokeAsync(GeneralFilterIgnoreCase);
+            }
+        }
+    }
+    private Task OnKeyDownAsync(FluentKeyCodeEventArgs args)
+    {
+        if (args.CtrlKey && args.Value.Equals("b", StringComparison.CurrentCultureIgnoreCase))
+        {
+            searchInputRef.FocusAsync();
+        }
+        return Task.CompletedTask;
+    }
+
+    private async ValueTask HandleGeneralFilterKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await ApplyFiltersAndRefreshAsync();
+        }
+    }
+
+    private void SetShowColumnSelectorDialog()
+    {
+        ShowColumnSelectorDialog = true;
+        ShowColumnSelectorDialogChanged.InvokeAsync(ShowColumnSelectorDialog);
+    }
+
+    public void FlipShowFilterPanel()
+    {
+        ShowFilterPanel = !ShowFilterPanel;
+        ShowFilterPanelChanged.InvokeAsync(ShowFilterPanel);
+    }
+
+    protected override void OnInitialized()
+    {
+        KeyCodeService.RegisterListener(OnKeyDownAsync);
+    }
+
+    public void Dispose()
+    {
+        KeyCodeService.UnregisterListener(OnKeyDownAsync);
+    }
+
+}

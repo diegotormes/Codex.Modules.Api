@@ -1,0 +1,26 @@
+﻿@namespace Eternet.Web.UI
+
+<FluentPaginator State="State">
+    <SummaryTemplate>
+        <FluentStack VerticalAlignment="VerticalAlignment.Center">
+            <span><strong>@State.TotalItemCount</strong> elementos</span>
+            <FluentSpacer Width="16" />
+
+            <span>Elementos por página</span>
+            <FluentSelect TOption="int"
+                          Width="100px"
+                          Value="@_itemsPerPageString"
+                          ValueChanged="HandleItemsPerPageChange">
+                <FluentOption Value=10>10</FluentOption>
+                <FluentOption Value=25>25</FluentOption>
+                <FluentOption Value=50>50</FluentOption>
+                <FluentOption Value=100>100</FluentOption>
+            </FluentSelect>
+            <FluentSpacer Width="16" />
+        </FluentStack>
+
+    </SummaryTemplate>
+    <PaginationTextTemplate>
+        Página @(State.CurrentPageIndex + 1) de  @(State.LastPageIndex + 1)
+    </PaginationTextTemplate>
+</FluentPaginator>

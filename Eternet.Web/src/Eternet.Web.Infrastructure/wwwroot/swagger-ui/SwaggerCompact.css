@@ -1,0 +1,32 @@
+.swagger-ui .wrapper {
+    margin: 0 auto;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.swagger-ui .info {
+    margin: 25px 0;
+}
+
+    .swagger-ui .info .title {
+        font-size: 26px;
+        line-height: 1.2;
+        margin: 16px 0;
+    }
+
+        .swagger-ui .info .title pre.version {
+            display: inline;
+            margin: 0;
+            padding: 0;
+        }
+
+        .swagger-ui .info .title small,
+        .swagger-ui .info .title .version {
+            font-size: .6em;
+        }
+
+.swagger-ui .opblock-tag {
+    font-size: 20px;
+    line-height: 1.25;
+    padding: 8px 0;
+}

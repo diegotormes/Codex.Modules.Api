@@ -1,0 +1,52 @@
+﻿@typeparam TItem
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="10">
+    <FluentToolbar Orientation="Orientation.Horizontal">
+        @if (CrudService.CurrentItem is null && !CrudService.IsEditing)
+        {
+            @* IconStart="@(new Icons.Regular.Size16.ArrowClockwise())" *@
+            <FluentTextField @bind-Value="_searchText" Placeholder="@CustomText.SearchPlaceholder" Style="width:300px;" />
+            <EternetButton Onclick="StartAdd" Appearance="Appearance.Accent">@CustomText.AddButtonText</EternetButton>
+        }
+    </FluentToolbar>
+
+    @if (CrudService.CurrentItem is not null && CrudService.IsAdding)
+    {
+        @ItemAddEditContent(CrudService.CurrentItem)
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5"
+                     HorizontalAlignment="HorizontalAlignment.Left">
+            <EternetButton Appearance="Appearance.Accent" Onclick="async () => await ConfirmSaveAsync()">@CustomText.SaveButtonText</EternetButton>
+            <EternetButton Appearance="Appearance.Stealth" Onclick="() => ResetEdit()">@CustomText.CancelButtonText</EternetButton>
+        </FluentStack>
+
+    }
+    <FluentDataGrid TGridItem="TItem"
+                    Items="@FilteredItems"
+                    MultiLine="true"
+                    Pagination="@_pagination"
+                    @ref="_dataGrid">
+        @DataGridContent
+        <TemplateColumn Title="@CustomText.ActionColumnTitle">
+            <ChildContent>
+                @if (CrudService.IsEditing)
+                {
+                    <EternetButton Appearance="Appearance.Accent"
+                                   Onclick="@(async () => await ConfirmSaveAsync())">
+                        @CustomText.SaveButtonText
+                    </EternetButton>
+                    <EternetButton IconStart="@(new Icons.Regular.Size16.Broom())" Appearance="Appearance.Stealth" Onclick="() => ResetEdit()">
+                        @CustomText.CancelButtonText
+                    </EternetButton>
+                }
+                else
+                {
+                    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
+                        <EternetButton AriaLabel="@CustomText.EditButtonText" IconEnd="@(new Icons.Regular.Size16.Edit())" Onclick="(() => StartEdit(context))" />
+                        <EternetButton AriaLabel="@CustomText.DeleteButtonText" IconEnd="@(new Icons.Regular.Size16.Delete())" Onclick="(() => OnDeleteItem(context))" />
+                    </FluentStack>
+                }
+            </ChildContent>
+        </TemplateColumn>
+    </FluentDataGrid>
+    <FluentPaginator State="@_pagination" />
+</FluentStack>

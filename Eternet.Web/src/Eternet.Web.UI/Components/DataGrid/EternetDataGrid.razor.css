@@ -1,0 +1,11 @@
+:root {
+    --datagrid-filter-width: 320px;
+}
+
+.filter-panel {
+    width: var(--datagrid-filter-width);
+    padding: 12px;
+    background: var(--neutral-layer-1);
+    border-left: 1px solid var(--neutral-stroke-rest);
+    overflow-y: auto;
+}

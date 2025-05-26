@@ -1,0 +1,18 @@
+﻿@namespace Eternet.Web.UI
+
+@typeparam TItem
+
+<div class="@GetClass()">
+    <FluentAutocomplete Label="@Label"
+                        Immediate="@Immediate"
+                        AutoComplete="off"
+                        Required="false"
+                        TOption="TItem" 
+                        MaximumSelectedOptions="@MaximumSelectedOptions"
+                        OnOptionsSearch="OnOptionsSearch"
+                        OptionText="@OptionText"
+                        SelectedOptions="@Value"
+                        SelectedOptionsChanged="HandleSelectedOptionsChange"
+                        Width="100%" />
+    <FluentValidationMessage For="@For" />
+</div>

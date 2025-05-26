@@ -1,0 +1,35 @@
+﻿@namespace Eternet.Web.UI
+
+@using System.Diagnostics
+
+<FluentButton Id="@ComponentId"
+              Disabled="@_disabled"
+              aria-label="@(string.IsNullOrWhiteSpace(AriaLabel) ? null : AriaLabel)"
+              @onclick="@Click"
+              Appearance="@Appearance"
+              Style="@Style">
+    <FluentStack Orientation="Orientation.Horizontal"
+                 HorizontalAlignment="HorizontalAlignment.Left"
+                 VerticalAlignment="VerticalAlignment.Center">
+        @if (_running)
+        {
+            <FluentProgressRing Width="@GetIconSizeInPixels()"></FluentProgressRing>
+        }
+        else 
+        {
+            if (IconStart is not null)
+            {
+                <FluentIcon Value="@IconStart" Slot="start" />
+            }
+            else if (IconEnd is not null)
+            {
+                <FluentIcon Value="@IconEnd" Slot="end" />
+            }
+        }
+        @ChildContent
+    </FluentStack>
+</FluentButton>
+@if (!string.IsNullOrWhiteSpace(TooltipText))
+{
+    <FluentTooltip Anchor="@ComponentId" Position=TooltipPosition.Top Delay=TooltipDelay>@TooltipText</FluentTooltip>
+}

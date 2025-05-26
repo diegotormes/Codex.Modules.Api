@@ -1,0 +1,17 @@
+@namespace Eternet.Web.UI
+@using Microsoft.FluentUI.AspNetCore.Components // Required for Fluent Components
+
+@typeparam EnumType where EnumType : struct, Enum
+
+<div>
+    <FluentLabel Typo="Typography.Subject">@Label</FluentLabel>
+    <FluentSelect TOption="string" @bind-Value="@CurrentValueAsString" Style="width: 100%;">
+        <FluentOption Value="@(null)">Todos</FluentOption>
+        @foreach (var item in EnumValues)
+        {
+            <FluentOption Value="@item.ToString()">
+                @item.ToString()
+            </FluentOption>
+        }
+    </FluentSelect>
+</div>

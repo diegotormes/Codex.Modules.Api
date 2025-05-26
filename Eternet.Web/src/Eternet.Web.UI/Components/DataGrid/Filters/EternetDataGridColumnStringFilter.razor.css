@@ -1,0 +1,6 @@
+﻿/* This don't work, Try to fix and remove the code from app.css */
+.string-filter-wrapper fluent-select::part(positioning-region),
+.string-filter-wrapper fluent-select::part(listbox) {
+    position: fixed;
+    z-index: 1001 !important;
+}

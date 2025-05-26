@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<IsTestProject>true</IsTestProject>
+		<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+		<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Xunit" />
+	</ItemGroup>
+
+        <ItemGroup>
+                <PackageReference Include="AutoFixture.AutoNSubstitute" />
+                <PackageReference Include="FluentAssertions" />
+                <PackageReference Include="bunit" />
+                <PackageReference Include="NSubstitute" />
+        </ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Eternet.Web.UI\Eternet.Web.UI.csproj" />
+	</ItemGroup>
+</Project>
