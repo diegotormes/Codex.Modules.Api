@@ -27,6 +27,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\tests\Eternet.Testing\Eternet.Testing.csproj" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
     <PackageReference Include="FirebirdDb.Embedded.V3.NativeAssets.Windows.X64" Version="1.0.6" PrivateAssets="all" />
   </ItemGroup>
@@ -39,6 +43,7 @@
   <ItemGroup>
 
     <ProjectReference Include="..\..\src\Eternet.Accounting.Api\Eternet.Accounting.Api.csproj" />
+    <ProjectReference Include="..\..\..\src\Eternet.Api.Common\Eternet.Api.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
