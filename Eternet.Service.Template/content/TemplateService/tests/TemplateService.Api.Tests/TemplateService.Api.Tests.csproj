@@ -1,12 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="xunit" Version="2.4.2" />
-    <PackageReference Include="FluentAssertions" Version="7.2.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <Compile Remove="Common\**" />
+    <Compile Remove="Features\**" />
+    <EmbeddedResource Remove="Common\**" />
+    <EmbeddedResource Remove="Features\**" />
+    <None Remove="Common\**" />
+    <None Remove="Features\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoFixture.AutoNSubstitute" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="Testcontainers" />
+    <PackageReference Include="System.ComponentModel.TypeConverter" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\TemplateService.Api\TemplateService.Api.csproj" />
