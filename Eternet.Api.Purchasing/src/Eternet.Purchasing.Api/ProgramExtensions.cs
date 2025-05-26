@@ -4,8 +4,8 @@ using Microsoft.Extensions.Options;
 using Eternet.Mediator.Caching;
 using Eternet.Mediator.Extensions;
 using Eternet.Web.Infrastructure.Extensions;
-using Eternet.Purchasing.Api.Configuration;
-using Eternet.Purchasing.Api.Services;
+using Eternet.Api.Common.Configuration;
+using Eternet.Api.Common;
 using Eternet.Purchasing.Api.Extensions;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
@@ -79,7 +79,7 @@ public static class ProgramExtensions
         services.AddEndpointsApiExplorer();
         services.AddCustomSwagger();
         services.AddConfigurations(configuration);
-        services.AddSingleton<ILegacyContextFabric, LegacyContextFabric>();
+        services.AddSingleton<ILegacyContextFactory<PurchasingContext>, LegacyContextFactory<PurchasingContext>>();
         services.AddHttpContextAccessor();
         services.AddScoped<IEnvironmentService, EnvironmentService>();
         services.AddConnectionStringBuilder();
@@ -91,8 +91,8 @@ public static class ProgramExtensions
             var useProd = env == ApiEnvironment.Production ? true : legacyDbConfig.Value.UseProduction;
             var logEntityFramework = useProd ? legacyDbConfig.Value.Production.LogEntityFramework : legacyDbConfig.Value.Testing.LogEntityFramework;
             var connectionStringBuilder = s.GetRequiredService<FbConnectionStringBuilder>();
-            var ctxFabric = s.GetRequiredService<ILegacyContextFabric>();
-            var ctx = ctxFabric.NewAccountingContext(connectionStringBuilder.ToString(), useProd, logEntityFramework);
+            var factory = s.GetRequiredService<ILegacyContextFactory<PurchasingContext>>();
+            var ctx = factory.Create(connectionStringBuilder.ToString(), logEntityFramework);
             return ctx;
         });
         services.AddScoped<DbContext>(s => s.GetService<PurchasingContext>()!);
@@ -137,7 +137,7 @@ public static class ProgramExtensions
 
     public static FbConnectionStringBuilder CreateConnectionBuilder(this LegacyConnectionStringBuilder connBuilder)
     {
-        return new FbConnectionStringBuilder
+        var builder = new FbConnectionStringBuilder
         {
             DataSource = connBuilder.DataSource,
             Database = connBuilder.Database,
@@ -147,5 +147,10 @@ public static class ProgramExtensions
             Pooling = connBuilder.Pooling,
             Port = connBuilder.Port
         };
+        if (connBuilder.ConnectionLifeTime is int lifeTime)
+        {
+            builder.ConnectionLifeTime = lifeTime;
+        }
+        return builder;
     }
 }

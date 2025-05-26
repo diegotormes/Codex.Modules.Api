@@ -1,4 +1,4 @@
-using Eternet.Accounting.Api.Configuration;
+using Eternet.Api.Common.Configuration;
 
 namespace Eternet.Accounting.Api.Tests;
 

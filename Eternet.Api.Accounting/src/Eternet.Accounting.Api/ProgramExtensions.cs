@@ -58,7 +58,7 @@ public static class ProgramExtensions
         services.AddCustomSwagger();
         services.AddConfigurations(configuration);
 
-        services.AddSingleton<ILegacyContextFabric, LegacyContextFabric>();
+        services.AddSingleton<ILegacyContextFactory<AccountingContext>, LegacyContextFactory<AccountingContext>>();
         services.AddHttpContextAccessor();
         services.AddScoped<IEnvironmentService, EnvironmentService>();
         services.AddConnectionStringBuilder();
@@ -75,12 +75,8 @@ public static class ProgramExtensions
                     ? legacyDbConfig.Value.Production.LogEntityFramework
                     : legacyDbConfig.Value.Testing.LogEntityFramework;
                 var connectionStringBuilder = s.GetRequiredService<FbConnectionStringBuilder>();
-                var ctxFabric = s.GetRequiredService<ILegacyContextFabric>();
-                var ctx = ctxFabric
-                    .NewAccountingContext(
-                        connectionStringBuilder.ToString(),
-                        useProd,
-                        logEntityFramework);
+                var factory = s.GetRequiredService<ILegacyContextFactory<AccountingContext>>();
+                var ctx = factory.Create(connectionStringBuilder.ToString(), logEntityFramework);
                 return ctx;
             });
         services.AddScoped<DbContext>(s => s.GetService<AccountingContext>()!);
@@ -125,7 +121,7 @@ public static class ProgramExtensions
 
     public static FbConnectionStringBuilder CreateConnectionBuilder(this LegacyConnectionStringBuilder connBuilder)
     {
-        return new FbConnectionStringBuilder
+        var builder = new FbConnectionStringBuilder
         {
             DataSource = connBuilder.DataSource,
             Database = connBuilder.Database,
@@ -133,8 +129,12 @@ public static class ProgramExtensions
             Password = connBuilder.Password,
             Charset = connBuilder.Charset,
             Pooling = connBuilder.Pooling,
-            ConnectionLifeTime = connBuilder.ConnectionLifeTime,
             Port = connBuilder.Port
         };
+        if (connBuilder.ConnectionLifeTime is int lifeTime)
+        {
+            builder.ConnectionLifeTime = lifeTime;
+        }
+        return builder;
     }
 }
