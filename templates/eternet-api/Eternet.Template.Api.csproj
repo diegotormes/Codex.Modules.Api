@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="Eternet.Api.Common/Eternet.Api.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Eternet.Api.Common\**" />
+    <None Remove="Eternet.Api.Common\**" />
+  </ItemGroup>
+</Project>
