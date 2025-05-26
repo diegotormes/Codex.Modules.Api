@@ -1,4 +1,4 @@
-# Eternet Microservice Template
+# Eternet Web API Service Template
 
 This package contains a project template for creating new Eternet microservices.
 Install the template globally and use `dotnet new et-service -n MyService` to

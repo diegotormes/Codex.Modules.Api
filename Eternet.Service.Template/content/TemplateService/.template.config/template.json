@@ -1,10 +1,10 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "author": "Eternet",
-  "classifications": ["Web", "Service"],
+  "classifications": [ "Web", "Service" ],
   "name": "Eternet Microservice",
   "identity": "Eternet.Service.Template",
-  "shortName": "et-service",
+  "shortName": "eternet-webapi",
   "sourceName": "TemplateService",
   "preferNameDirectory": true,
   "tags": {
