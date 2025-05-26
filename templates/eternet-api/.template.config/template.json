@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Eternet",
+  "classifications": ["Web", "Service"],
+  "name": "Eternet API service",
+  "identity": "Eternet.Api.Template",
+  "shortName": "eternet-api",
+  "sourceName": "Eternet.Template.Api",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  }
+}
