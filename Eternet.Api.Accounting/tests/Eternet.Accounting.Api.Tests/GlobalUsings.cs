@@ -1,3 +1,2 @@
-global using FluentAssertions;
-global using Xunit;
+global using AwesomeAssertions;
 global using Eternet.Testing.Assertions;

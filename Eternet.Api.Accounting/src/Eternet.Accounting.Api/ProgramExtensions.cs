@@ -71,16 +71,13 @@ public static class ProgramExtensions
                 var envService = s.GetRequiredService<IEnvironmentService>();
                 var env = envService.GetEnvironment();
                 var useProd = env == ApiEnvironment.Production;
-                var logEntityFramework = useProd
-                    ? legacyDbConfig.Value.Production.LogEntityFramework
-                    : legacyDbConfig.Value.Testing.LogEntityFramework;
                 var connectionStringBuilder = s.GetRequiredService<FbConnectionStringBuilder>();
                 var ctxFabric = s.GetRequiredService<ILegacyContextFabric>();
                 var ctx = ctxFabric
                     .NewAccountingContext(
                         connectionStringBuilder.ToString(),
                         useProd,
-                        logEntityFramework);
+                        logEntityFramework: true);
                 return ctx;
             });
         services.AddScoped<DbContext>(s => s.GetService<AccountingContext>()!);
@@ -102,6 +99,5 @@ public static class ProgramExtensions
     {
         services.Configure<LegacyDbConfig>(configuration.GetSection(nameof(LegacyDbConfig)));
     }
-
 
 }

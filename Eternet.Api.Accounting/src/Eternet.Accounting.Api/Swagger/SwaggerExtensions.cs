@@ -7,7 +7,7 @@ namespace Eternet.Accounting.Api.Swagger;
 
 public static class SwaggerExtensions
 {
-    public static void AddCustomSwagger(this IServiceCollection services)
+    public static void AddCustomSwagger_ToRemove(this IServiceCollection services)
     {
         services.AddSwaggerGen(c =>
         {

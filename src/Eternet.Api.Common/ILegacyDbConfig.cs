@@ -14,7 +14,7 @@ public interface ILegacyConnectionStringBuilder
 
 public interface ILegacyDbConfig
 {
-    bool UseProduction { get; }
-    ILegacyConnectionStringBuilder Testing { get; }
-    ILegacyConnectionStringBuilder Production { get; }
+    bool UseProduction { get; set; }
+    ILegacyConnectionStringBuilder Testing { get; set; }
+    ILegacyConnectionStringBuilder Production { get; set; }
 }

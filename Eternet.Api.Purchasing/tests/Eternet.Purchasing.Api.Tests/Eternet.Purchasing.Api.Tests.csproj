@@ -21,7 +21,6 @@
   <ItemGroup>
     <PackageReference Include="AutoFixture.AutoNSubstitute" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
-		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="Testcontainers" />
     <PackageReference Include="System.ComponentModel.TypeConverter" />
   </ItemGroup>

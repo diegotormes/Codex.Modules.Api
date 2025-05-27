@@ -1,7 +1,7 @@
 using System.Text;
 using Eternet.AspNetCore.ServiceFabric.WebHost;
 using Eternet.Web.Infrastructure.Extensions;
-using OpenTelemetry.Trace;
+using TemplateService.Api;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 var builder = WebApplication.CreateBuilder(args);

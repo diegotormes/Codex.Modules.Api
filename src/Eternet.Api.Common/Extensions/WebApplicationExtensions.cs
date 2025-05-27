@@ -1,4 +1,5 @@
 using Eternet.AspNetCore.ServiceFabric;
+using Eternet.Web.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 
 namespace Eternet.Api.Common.Extensions;

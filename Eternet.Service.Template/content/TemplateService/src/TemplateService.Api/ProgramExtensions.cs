@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Eternet.AspNetCore.ServiceFabric;
 using Eternet.Web.Infrastructure.Extensions;
 
 namespace TemplateService.Api;

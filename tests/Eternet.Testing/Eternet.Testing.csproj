@@ -1,12 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <NoWarn>$(NoWarn);MSB3270</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoFixture.AutoNSubstitute" />
-    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="AwesomeAssertions" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="xunit.v3" />
   </ItemGroup>

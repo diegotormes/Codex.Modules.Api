@@ -1,6 +1,7 @@
 using System.Reflection;
 using Eternet.Web.Infrastructure.Swagger;
 using Microsoft.AspNetCore.Http.Metadata;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 

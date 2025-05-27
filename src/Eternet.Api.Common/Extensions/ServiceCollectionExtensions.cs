@@ -1,7 +1,6 @@
-using Eternet.Api.Common;
 using Eternet.Web.Infrastructure.Environment;
 using Microsoft.Extensions.Options;
-using FirebirdSql.Data.FirebirdClient;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Eternet.Api.Common.Extensions;
 

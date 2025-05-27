@@ -5,8 +5,8 @@ namespace Eternet.Accounting.Api.Configuration;
 public class LegacyDbConfig : ILegacyDbConfig
 {
     public bool UseProduction { get; set; }
-    public LegacyConnectionStringBuilder Testing { get; set; } = new();
-    public LegacyConnectionStringBuilder Production { get; set; } = new();
+    public ILegacyConnectionStringBuilder Testing { get; set; } = new LegacyConnectionStringBuilder();
+    public ILegacyConnectionStringBuilder Production { get; set; } = new LegacyConnectionStringBuilder();
 }
 
 public class LegacyConnectionStringBuilder : ILegacyConnectionStringBuilder

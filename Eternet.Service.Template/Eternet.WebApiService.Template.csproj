@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <PackageId>Eternet.WebApiService.Template</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.0.2</Version>
     <PackageType>Template</PackageType>
     <Description>Eternet Web API Service project template.</Description>
     <PackageTags>template;service;eternet</PackageTags>

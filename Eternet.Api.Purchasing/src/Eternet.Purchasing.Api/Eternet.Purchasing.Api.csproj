@@ -22,7 +22,7 @@
 		</PackageReference>
 		<PackageReference Include="Eternet.ServiceFabric.Workers" Version="9.0.1017" />
 		<PackageReference Include="Eternet.Mediator" Version="1.2.11" />
-		<PackageReference Include="Eternet.Mediator.Generator" Version="1.2.10">
+		<PackageReference Include="Eternet.Mediator.Generator" Version="1.2.18">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -30,7 +30,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
-    <PackageReference Include="Eternet.Web.Infrastructure" Version="1.0.7" />
+    <PackageReference Include="Eternet.Web.Infrastructure" Version="1.0.8" />
     <!-- /Eternet -->
 
 		<PackageReference Include="Microsoft.AspNetCore.OData" Version="9.3.1" />

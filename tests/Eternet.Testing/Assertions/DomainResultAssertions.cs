@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 
 namespace Eternet.Testing.Assertions;
 
