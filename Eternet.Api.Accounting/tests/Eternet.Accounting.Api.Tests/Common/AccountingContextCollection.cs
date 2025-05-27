@@ -33,8 +33,6 @@ public sealed class AccountingContextFixture : IAsyncLifetime
         OperatingSystem.IsLinux() ||
         !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ETERNET_TEST_USE_SQLITE"));
 
-    private bool _disposedValue;
-
     public AccountingContextFixture()
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

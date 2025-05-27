@@ -25,10 +25,6 @@
     <PackageReference Include="System.ComponentModel.TypeConverter" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\tests\Eternet.Testing\Eternet.Testing.csproj" />
-  </ItemGroup>
-
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\Eternet.Purchasing.Api\Eternet.Purchasing.Api.csproj" />
 	</ItemGroup>

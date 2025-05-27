@@ -60,7 +60,6 @@
 		<ProjectReference Include="..\..\..\Eternet.Web\src\Eternet.Web.Infrastructure\Eternet.Web.Infrastructure.csproj" />-->
 
     <ProjectReference Include="..\Eternet.Accounting.Contracts\Eternet.Accounting.Contracts.csproj" />
-    <ProjectReference Include="..\..\..\src\Eternet.Api.Common\Eternet.Api.Common.csproj" />
         </ItemGroup>
 
 </Project>

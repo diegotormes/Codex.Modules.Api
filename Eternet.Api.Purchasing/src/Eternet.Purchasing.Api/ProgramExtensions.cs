@@ -100,8 +100,8 @@ public static class ProgramExtensions
 
     public static void UseAppMiddlewares(this WebApplication app)
     {
-        app.UseAppMiddlewares(
-            serviceFabricPath: "Eternet.Api.Modules/Eternet.Purchasing.Api");
+        app.UseSharedSwaggerUI(serviceFabricPath: "Eternet.Api.Modules/Eternet.Purchasing.Api", useServiceFabric: ServiceFabricUtils.IsHosted);
+        app.MapControllers();
     }
 
     private static void AddConfigurations(this IServiceCollection services, IConfiguration configuration)

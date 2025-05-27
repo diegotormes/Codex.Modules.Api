@@ -1,13 +1,13 @@
-using Eternet.Web.Infrastructure.Environment;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
+using Eternet.Accounting.Api.Configuration;
 
-namespace Eternet.Api.Common.Extensions;
+namespace Eternet.Accounting.Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddConnectionStringBuilder<TConfig>(this IServiceCollection services, bool ignoreUseProduction = false)
-        where TConfig : class, ILegacyDbConfig
+    public static IServiceCollection AddConnectionStringBuilder<TConfig>(
+        this IServiceCollection services, 
+        bool ignoreUseProduction = false)
+        where TConfig : LegacyDbConfig
     {
         return services.AddTransient(provider =>
         {

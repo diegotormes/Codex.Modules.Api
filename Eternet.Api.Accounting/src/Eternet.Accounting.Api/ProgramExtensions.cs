@@ -1,3 +1,6 @@
+using Eternet.Accounting.Api.Configuration;
+using Eternet.Accounting.Api.Extensions;
+
 namespace Eternet.Accounting.Api;
 public static class ProgramExtensions
 {
@@ -90,9 +93,9 @@ public static class ProgramExtensions
 
     public static void UseAppMiddlewares(this WebApplication app)
     {
-        app.UseAppMiddlewares(
-            serviceFabricPath: "Eternet.Api.Modules/Eternet.Accounting.Api",
-            mapDefaultEndpoints: true);
+        app.UseSharedSwaggerUI(serviceFabricPath: "Eternet.Api.Modules/Eternet.Accounting.Api", useServiceFabric: ServiceFabricUtils.IsHosted);
+        app.MapControllers();
+        app.MapDefaultEndpoints();
     }
 
     private static void AddConfigurations(this IServiceCollection services, IConfiguration configuration)

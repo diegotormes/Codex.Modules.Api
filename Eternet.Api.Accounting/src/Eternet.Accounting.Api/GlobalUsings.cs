@@ -16,9 +16,7 @@ global using Eternet.Accounting.Api.Features.VatClosures.Preview;
 
 // ** //
 global using System.Text.Json.Serialization;
-global using Eternet.Accounting.Api.Configuration;
 global using Eternet.Accounting.Api.Services;
-global using Eternet.Accounting.Api.Swagger;
 global using FirebirdSql.Data.FirebirdClient;
 global using Microsoft.Extensions.Options;
 global using Eternet.Mediator.Extensions;
@@ -37,4 +35,3 @@ global using Eternet.Accounting.Contracts;
 global using Microsoft.AspNetCore.OData.Query.Expressions;
 global using Eternet.Accounting.Contracts.JournalEntries.Responses;
 global using Eternet.Accounting.Api.Features.VatClosures.Preview.MaterializedViews;
-global using Eternet.Api.Common.Extensions;

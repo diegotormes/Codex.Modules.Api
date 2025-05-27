@@ -8,7 +8,7 @@ namespace Eternet.Purchasing.Api.Extensions;
 
 public static class SwaggerExtensions
 {
-    public static void AddCustomSwagger_ToRemove(this IServiceCollection services)
+    public static void AddCustomSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(c =>
         {
@@ -21,11 +21,11 @@ public static class SwaggerExtensions
             c.OperationFilter<ReadGeneratedCodeAttributesOperationFilter>();
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+            if (File.Exists(xmlPath))
+            {
+                c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+            }
             c.OperationFilter<RemoveODataMediaTypesFilter>();
-            //var xml = Path.Combine(AppContext.BaseDirectory,
-            //               "Eternet.Accounting.Contracts.xml");
-            //c.IncludeXmlComments(xml, includeControllerXmlComments: false);
         });
     }
 }

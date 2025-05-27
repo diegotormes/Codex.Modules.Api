@@ -1,10 +1,11 @@
+using Eternet.Purchasing.Api.Configuration;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace Eternet.Api.Common.Extensions;
+namespace Eternet.Purchasing.Api.Extensions;
 
 public static class ConnectionStringExtensions
 {
-    public static FbConnectionStringBuilder CreateConnectionBuilder(this ILegacyConnectionStringBuilder builder)
+    public static FbConnectionStringBuilder CreateConnectionBuilder(this LegacyConnectionStringBuilder builder)
     {
         return new FbConnectionStringBuilder
         {

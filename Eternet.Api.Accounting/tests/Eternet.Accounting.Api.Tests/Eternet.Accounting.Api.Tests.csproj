@@ -22,13 +22,10 @@
     <PackageReference Include="FirebirdDb.Embedded.V3.NativeAssets.Windows.X64" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="System.ComponentModel.TypeConverter" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\tests\Eternet.Testing\Eternet.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
@@ -43,7 +40,6 @@
   <ItemGroup>
 
     <ProjectReference Include="..\..\src\Eternet.Accounting.Api\Eternet.Accounting.Api.csproj" />
-    <ProjectReference Include="..\..\..\src\Eternet.Api.Common\Eternet.Api.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

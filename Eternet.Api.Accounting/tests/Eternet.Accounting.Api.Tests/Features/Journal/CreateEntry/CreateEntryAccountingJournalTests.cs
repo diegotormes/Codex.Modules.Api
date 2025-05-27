@@ -2,6 +2,7 @@ using Eternet.Accounting.Api.Tests.Common;
 using Eternet.Accounting.Contracts.JournalEntries;
 using Eternet.Accounting.Contracts.JournalEntries.Responses;
 using Eternet.Accounting.Api.Model;
+using Eternet.Accounting.Api.Tests.Assertions;
 
 namespace Eternet.Accounting.Api.Tests.Features.Journal.CreateEntry;
 
