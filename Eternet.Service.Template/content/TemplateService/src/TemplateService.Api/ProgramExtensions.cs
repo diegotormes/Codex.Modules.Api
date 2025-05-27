@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Eternet.Api.Common.Extensions;
 using Eternet.AspNetCore.ServiceFabric;
 using Eternet.Web.Infrastructure.Extensions;
 
@@ -25,5 +26,6 @@ public static class ProgramExtensions
             serviceFabricPath: "Eternet.Api.Modules/TemplateService.Api",
             useServiceFabric: ServiceFabricUtils.IsHosted);
         app.MapControllers();
+        app.MapGet("/hello-world", () => Results.Ok("Hello, world!"));
     }
 }

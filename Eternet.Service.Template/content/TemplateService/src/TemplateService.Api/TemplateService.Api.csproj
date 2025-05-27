@@ -8,5 +8,6 @@
 	<ItemGroup>
 		<PackageReference Include="Eternet.AspNetCore.ServiceFabric" Version="9.0.4" />
 		<PackageReference Include="Eternet.Web.Infrastructure" Version="1.0.8" />
+		<PackageReference Include="Eternet.Api.Common" Version="1.0.0" />
 	</ItemGroup>
 </Project>

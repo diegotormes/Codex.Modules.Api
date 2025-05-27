@@ -22,7 +22,10 @@ public static class SwaggerExtensions
             c.OperationFilter<ReadGeneratedCodeAttributesOperationFilter>();
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+            if (File.Exists(xmlPath))
+            {
+                c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+            }
             c.OperationFilter<RemoveODataMediaTypesFilter>();
         });
     }
